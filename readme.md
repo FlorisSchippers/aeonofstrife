@@ -1,7 +1,7 @@
-# aeonofstrife-react #
+# Aeon of Strife #
 ## What is this repository? ##
 
-React frontend for AeonOfStrife.nl
+Competitive eSports platform using React + Firecloud for AeonOfStrife.nl
 
 ### Who do I talk to? ###
-For questions about Wordpress or this repository you can address questions to Floris Schippers
+For questions about this repository you can address Floris Schippers
