@@ -3,6 +3,8 @@ import {Switch, withRouter, Route} from 'react-router-dom';
 import HomePage from '../components/HomePage';
 import UserOverviewPage from '../components/UserOverviewPage';
 import UserDetailPage from '../components/UserDetailPage';
+import LoginPage from '../components/LoginPage';
+import RegisterPage from '../components/RegisterPage';
 // import LeagueOverviewPage from '../components/LeagueOverviewPage';
 // import LeagueDetailPage from '../components/LeagueDetailPage';
 // import TournamentOverviewPage from '../components/TournamentOverviewPage';
@@ -39,6 +41,8 @@ class Root extends Component {
                 <Route exact path='/' component={HomePage}/>
                 <Route exact path='/users' component={UserOverviewPage}/>
                 <Route exact path='/users/:user' component={UserDetailPage}/>
+                <Route exact path='/login' component={LoginPage}/>
+                <Route exact path='/register' component={RegisterPage}/>
                 {/*<Route exact path='/leagues' component={LeagueOverviewPage}/>*/}
                 {/*<Route exact path='/leagues/:league' component={LeagueDetailPage}/>*/}
                 {/*<Route exact path='/tournaments' component={TournamentOverviewPage}/>*/}

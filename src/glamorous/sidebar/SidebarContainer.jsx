@@ -8,12 +8,14 @@ const mediaQueries = {
 };
 
 export default glamorous.div({
-  width: '100vw',
-  height: '100vh',
-  display: 'inline-block',
+  float: 'left',
   position: 'relative',
-  backgroundImage: 'url(/images/dota-bg-medium.jpg)',
-  backgroundPosition: 'top',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+  width: '250px',
+  height: '100vh',
+  background: 'linear-gradient(to right, rgba(10,10,10,0.5), rgba(10,10,10,0.25))',
+  display: 'none',
+
+  [mediaQueries.tablet_portrait]: {
+    display: 'inline-block',
+  }
 });

@@ -3,12 +3,11 @@ import Container from '../glamorous/structure/Container.jsx';
 import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
 import SidebarPanel from './SidebarPanel';
 import Title from '../glamorous/text/Title.jsx';
-import LoginPanel from "../glamorous/structure/LoginContainer";
-import LoginLink from '../glamorous/text/LoginLink';
+import LoginPanel from './LoginPanel';
 
-class HomePage extends React.Component {
-  constructor() {
-    super();
+class RegisterPage extends React.Component {
+  constructor(props) {
+    super(props);
     // Bindings
   }
 
@@ -19,10 +18,7 @@ class HomePage extends React.Component {
       <Container>
         <SidebarPanel/>
         <ContentContainer>
-          <LoginPanel>
-            <LoginLink to={'/login'}>Login</LoginLink>
-            <LoginLink style={{top: '50px'}} to={'/register'}>Register</LoginLink>
-          </LoginPanel>
+          <LoginPanel/>
           <Title>{title}</Title>
         </ContentContainer>
       </Container>
@@ -30,6 +26,6 @@ class HomePage extends React.Component {
   }
 }
 
-HomePage.propTypes = {};
+RegisterPage.propTypes = {};
 
-export default HomePage;
+export default RegisterPage;
