@@ -1,11 +1,13 @@
 import React from 'react';
-import Container from '../glamorous/structure/Container.jsx';
-import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
+import Container from '../glamorous/structure/Container';
+import ContentContainer from '../glamorous/structure/ContentContainer';
 import SidebarPanel from './SidebarPanel';
+import LoginPanel from './LoginPanel';
 import BackButton from '../glamorous/buttons/BackButton';
-import Title from '../glamorous/text/Title.jsx';
+import Title from '../glamorous/text/Title';
 import Paragraph from '../glamorous/text/Paragraph';
 import UserLink from '../glamorous/text/PageLink';
+import slugParser from "../common/slugParser";
 
 class UserOverviewPage extends React.Component {
   constructor(props) {
@@ -23,43 +25,49 @@ class UserOverviewPage extends React.Component {
     let users = [];
     if (this.state.users.length === 0) {
       firestore.collection('users').get()
+        .catch((error) => {
+          this.setState({error: error});
+          this.setState({loading: false});
+        })
         .then((querySnapshot) => {
           querySnapshot.forEach(function (doc) {
             users.push(doc.data());
           });
           this.setState({users: users});
           this.setState({loading: false});
-        })
-        .catch((error) => {
-          this.setState({error: error});
-          this.setState({loading: false});
         });
     }
   }
 
   render() {
-    let title = `User overview page`;
-    let users = ``;
+    let userOverviewPage = ``;
     if (this.state.error) {
-      users = <Paragraph>{error.message}</Paragraph>;
+      userOverviewPage = <ContentContainer>
+        <LoginPanel refresh={false}/>
+        <Paragraph>{error.message}</Paragraph>;
+      </ContentContainer>;
     } else if (this.state.loading) {
-      users = <Paragraph>Loading ...</Paragraph>;
+      userOverviewPage = <ContentContainer>
+        <LoginPanel refresh={false}/>
+        <Paragraph>Loading users...</Paragraph>
+      </ContentContainer>;
     } else {
-      users = this.state.users;
+      let users = this.state.users;
       users = users.map((user) =>
-        <UserLink style={{display: 'table'}} to={'/users/' + user.nickname}
-                  key={users.indexOf(user)}>{user.nickname}</UserLink>
+        <UserLink style={{display: 'table'}} to={'/users/' + user.displayName}
+                  key={users.indexOf(user)}>{user.displayName}</UserLink>
       );
+      userOverviewPage = <ContentContainer>
+        <LoginPanel refresh={false}/>
+        {users}
+      </ContentContainer>
     }
 
     return (
       <Container>
         <BackButton to={'/'}/>
         <SidebarPanel/>
-        <ContentContainer>
-          <Title>{title}</Title>
-          {users}
-        </ContentContainer>
+        {userOverviewPage}
       </Container>
     );
   }

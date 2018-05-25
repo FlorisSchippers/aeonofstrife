@@ -12,14 +12,14 @@ export default glamorous.div({
   fontFamily: 'Open Sans',
   fontSize: '17px',
   lineHeight: '1.5',
-  width: 'calc(100vw - 50px)',
-  height: 'calc(100vh - 50px)',
+  width: 'calc(100% - 50px)',
+  height: 'calc(100% - 50px)',
   display: 'inline-block',
   position: 'relative',
   padding: '25px',
 
   [mediaQueries.tablet_portrait]: {
     float: 'right',
-    width: 'calc(100vw - 250px - 50px)',
+    width: 'calc(100% - 250px - 50px)',
   }
 });

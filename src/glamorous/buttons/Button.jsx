@@ -1,8 +1,7 @@
 import glamorous from 'glamorous';
 import appVars from '../../config/appVars';
-import {Link} from 'react-router-dom';
 
-export default glamorous(Link)({
+export default glamorous.button({
   backgroundColor: '#7B9F35',
   color: '#DDFAA4',
   cursor: 'pointer',
@@ -19,5 +18,5 @@ export default glamorous(Link)({
 
   '&:hover': {
     backgroundColor: '#425B10',
-  }
+  },
 });

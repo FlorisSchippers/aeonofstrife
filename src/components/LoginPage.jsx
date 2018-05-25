@@ -1,14 +1,14 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import Container from '../glamorous/structure/Container.jsx';
 import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
 import SidebarPanel from './SidebarPanel';
 import Title from '../glamorous/text/Title.jsx';
-import LoginPanel from "../glamorous/structure/LoginContainer";
-import LoginLink from '../glamorous/text/LoginLink';
+import LoginPanel from './LoginPanel';
 import FormGroup from '../glamorous/form/FormGroup';
 import ControlLabel from '../glamorous/form/ControlLabel';
 import FormControl from '../glamorous/form/FormControl';
-import Button from '../glamorous/form/Button';
+import FormButton from '../glamorous/form/FormButton';
 
 class LoginPage extends React.Component {
   constructor(props) {
@@ -16,6 +16,7 @@ class LoginPage extends React.Component {
     this.state = {
       email: ``,
       password: ``,
+      login: ``,
     };
     // Bindings
     this.validateForm = this.validateForm.bind(this);
@@ -26,14 +27,20 @@ class LoginPage extends React.Component {
   }
 
   handleChange = event => {
-    console.log(event);
     this.setState({
       [event.target.id]: event.target.value
     });
   };
 
   handleSubmit = event => {
-    console.log('submitted, ', this.state);
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then((data) => {
+        this.setState({login: data});
+        this.props.history.push('/');
+      });
     event.preventDefault();
   };
 
@@ -44,10 +51,7 @@ class LoginPage extends React.Component {
       <Container>
         <SidebarPanel/>
         <ContentContainer>
-          <LoginPanel>
-            <LoginLink to={'/login'}>Login</LoginLink>
-            <LoginLink style={{top: '50px'}} to={'/register'}>Register</LoginLink>
-          </LoginPanel>
+          <LoginPanel refresh={this.state.login}/>
           <Title>{title}</Title>
           <form onSubmit={this.handleSubmit}>
             <FormGroup controlId="email" bsSize="large">
@@ -55,6 +59,7 @@ class LoginPage extends React.Component {
               <FormControl
                 autoFocus
                 type="email"
+                id="email"
                 value={this.state.email}
                 onChange={this.handleChange}
               />
@@ -63,16 +68,17 @@ class LoginPage extends React.Component {
               <ControlLabel>Password</ControlLabel>
               <FormControl
                 type="password"
+                id="password"
                 value={this.state.password}
                 onChange={this.handleChange}
               />
             </FormGroup>
-            <Button
+            <FormButton
               type="submit"
               disabled={!this.validateForm()}
             >
               Login
-            </Button>
+            </FormButton>
           </form>
         </ContentContainer>
       </Container>
@@ -82,4 +88,4 @@ class LoginPage extends React.Component {
 
 LoginPage.propTypes = {};
 
-export default LoginPage;
+export default withRouter(LoginPage);

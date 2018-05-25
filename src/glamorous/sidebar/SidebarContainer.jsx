@@ -11,7 +11,7 @@ export default glamorous.div({
   float: 'left',
   position: 'relative',
   width: '250px',
-  height: '100vh',
+  height: '100%',
   background: 'linear-gradient(to right, rgba(10,10,10,0.5), rgba(10,10,10,0.25))',
   display: 'none',
 
