@@ -14,11 +14,12 @@ class RegisterPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayName: ``,
-      photoURL: `https://dutchdota.com/images/profile_default.jpg`,
       email: ``,
       password: ``,
       confirmpassword: ``,
+      displayName: ``,
+      photoURL: `https://dutchdota.com/images/profile_default.jpg`,
+      team: ``,
     };
     // Bindings
     this.validateForm = this.validateForm.bind(this);
@@ -57,6 +58,7 @@ class RegisterPage extends React.Component {
           email: state.email,
           displayName: state.displayName,
           photoURL: state.photoURL,
+          team: state.team,
         })
           .catch((error) => {
             console.log(error);
@@ -69,16 +71,14 @@ class RegisterPage extends React.Component {
   };
 
   render() {
-    let title = `Register at Aeon of Strife`;
-
     return (
       <Container>
         <SidebarPanel/>
         <ContentContainer>
           <LoginPanel refresh={false}/>
-          <Title>{title}</Title>
+          <Title>Register at Aeon of Strife</Title>
           <form onSubmit={this.handleSubmit}>
-            <FormGroup controlId="nickname" bsSize="large">
+            <FormGroup controlId="displayName" bsSize="large">
               <ControlLabel>Display Name</ControlLabel>
               <FormControl
                 autoFocus

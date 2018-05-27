@@ -7,12 +7,12 @@ import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
 import PageLink from '../glamorous/text/PageLink';
 
-class UserOverviewPage extends React.Component {
+class LeagueOverviewPage extends React.Component {
   constructor(props) {
     super(props);
     // Bindings
     this.state = {
-      users: [],
+      leagues: [],
       loading: false,
       error: null,
     };
@@ -20,9 +20,9 @@ class UserOverviewPage extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true});
-    let users = [];
-    if (this.state.users.length === 0) {
-      firestore.collection('users').get()
+    let leagues = [];
+    if (this.state.leagues.length === 0) {
+      firestore.collection('leagues').get()
         .catch((error) => {
           this.setState({error: error});
           this.setState({loading: false});
@@ -30,36 +30,36 @@ class UserOverviewPage extends React.Component {
         .then((querySnapshot) => {
           querySnapshot.forEach(function (docSnapshot) {
             if (docSnapshot.id !== 'model') {
-              users.push(docSnapshot.data());
+              leagues.push(docSnapshot.data());
             }
           });
-          this.setState({users: users});
+          this.setState({leagues: leagues});
           this.setState({loading: false});
         });
     }
   }
 
   render() {
-    let userOverviewPage = ``;
+    let leagueOverviewPage = ``;
     if (this.state.error) {
-      userOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
         <Paragraph>{error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      userOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
-        <Paragraph>Loading users...</Paragraph>
+        <Paragraph>Loading leagues...</Paragraph>
       </ContentContainer>;
     } else {
-      let users = this.state.users.map((user, i) =>
+      let leagues = this.state.leagues.map((league, i) =>
         <PageLink style={{display: 'table'}}
-                  to={'/users/' + user.displayName}
-                  key={i}>{user.displayName}</PageLink>
+                  to={'/leagues/' + league.timestamp}
+                  key={i}>{league.timestamp}</PageLink>
       );
-      userOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
-        {users}
+        {leagues}
       </ContentContainer>
     }
 
@@ -67,12 +67,12 @@ class UserOverviewPage extends React.Component {
       <Container>
         <BackButton to={'/'}/>
         <SidebarPanel/>
-        {userOverviewPage}
+        {leagueOverviewPage}
       </Container>
     );
   }
 }
 
-UserOverviewPage.propTypes = {};
+LeagueOverviewPage.propTypes = {};
 
-export default UserOverviewPage;
+export default LeagueOverviewPage;

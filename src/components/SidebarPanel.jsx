@@ -11,14 +11,12 @@ class SidebarPanel extends React.Component {
   }
 
   render() {
-    let sidebarItems = ['Users', 'Leagues', 'Tournaments'];
-    const sidebar = sidebarItems.map((sidebarItem) => {
-      return (
-        <SidebarElement key={sidebarItems.indexOf(sidebarItem)}>
-          <SidebarLink to={'/' + sidebarItem.toLowerCase()}>{sidebarItem}</SidebarLink>
-        </SidebarElement>
-      )
-    });
+    let items = ['Users', 'Teams', 'Leagues', 'Tournaments'];
+    let sidebar = items.map((item, i) =>
+      <SidebarElement key={i}>
+        <SidebarLink to={'/' + item.toLowerCase()}>{item}</SidebarLink>
+      </SidebarElement>
+    );
 
     return (
       <SidebarContainer>

@@ -4,17 +4,15 @@ import ContentContainer from '../glamorous/structure/ContentContainer';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
 import BackButton from '../glamorous/buttons/BackButton';
-import UserTitle from '../glamorous/detail/DetailTitle';
 import Paragraph from '../glamorous/text/Paragraph';
-import UserImage from '../glamorous/detail/DetailImage';
-import slugParser from '../common/slugParser';
+import PageLink from '../glamorous/text/PageLink';
 
-class UserDetailPage extends React.Component {
+class TeamOverviewPage extends React.Component {
   constructor(props) {
     super(props);
     // Bindings
     this.state = {
-      user: ``,
+      teams: [],
       loading: false,
       error: null,
     };
@@ -22,53 +20,59 @@ class UserDetailPage extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true});
-    let user = ``;
-    if (this.state.user.length === 0) {
-      firestore.collection('users').where('displayName', '==', slugParser(this.props.location.pathname)).get()
+    let teams = [];
+    if (this.state.teams.length === 0) {
+      firestore.collection('teams').get()
         .catch((error) => {
           this.setState({error: error});
           this.setState({loading: false});
         })
         .then((querySnapshot) => {
-          querySnapshot.forEach(function (doc) {
-            user = doc.data();
+          querySnapshot.forEach(function (docSnapshot) {
+            if (docSnapshot.id !== 'model') {
+              teams.push(docSnapshot.data());
+            }
           });
-          this.setState({user: user});
+          this.setState({teams: teams});
           this.setState({loading: false});
         });
     }
   }
 
   render() {
-    let userDetailPage = ``;
+    let teamOverviewPage = ``;
     if (this.state.error) {
-      userDetailPage = <ContentContainer>
+      teamOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
         <Paragraph>{error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      userDetailPage = <ContentContainer>
+      teamOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
-        <Paragraph>Loading {slugParser(this.props.location.pathname)}'s profile...</Paragraph>
+        <Paragraph>Loading teams...</Paragraph>
       </ContentContainer>;
     } else {
-      userDetailPage = <ContentContainer>
+      let teams = this.state.teams.map((team, i) =>
+        <PageLink style={{display: 'table'}}
+                  to={'/teams/' + team.displayName}
+                  key={i}>{team.displayName}</PageLink>
+      );
+      teamOverviewPage = <ContentContainer>
         <LoginPanel refresh={false}/>
-        <UserImage src={this.state.user.photoURL}/>
-        <UserTitle>{this.state.user.displayName}</UserTitle>
-      </ContentContainer>;
+        {teams}
+      </ContentContainer>
     }
 
     return (
       <Container>
-        <BackButton to={'/users'}/>
+        <BackButton to={'/'}/>
         <SidebarPanel/>
-        {userDetailPage}
+        {teamOverviewPage}
       </Container>
     );
   }
 }
 
-UserDetailPage.propTypes = {};
+TeamOverviewPage.propTypes = {};
 
-export default UserDetailPage;
+export default TeamOverviewPage;

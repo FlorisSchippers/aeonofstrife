@@ -30,14 +30,14 @@ class LoginPanel extends React.Component {
     if (this.state.login === `` && this.props.refresh !== null && this.props.refresh.hasOwnProperty('displayName')) {
       return (
         <LoginContainer>
-          <LoginLink to={'/users/' + this.props.refresh.displayName}>{this.props.refresh.displayName}</LoginLink>
+          <LoginLink to={'/users/me'}>{this.props.refresh.displayName}</LoginLink>
           <LoginButton onClick={this.logout}>Logout</LoginButton>
         </LoginContainer>
       );
     } else if (this.state.login.hasOwnProperty('displayName')) {
       return (
         <LoginContainer>
-          <LoginLink to={'/users/' + this.state.login.displayName}>{this.state.login.displayName}</LoginLink>
+          <LoginLink to={'/users/me'}>{this.state.login.displayName}</LoginLink>
           <LoginButton onClick={this.logout}>Logout</LoginButton>
         </LoginContainer>
       );
