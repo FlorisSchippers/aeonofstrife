@@ -80,7 +80,7 @@ class TournamentDetailPage extends React.Component {
       );
       tournamentDetailPage = <ContentContainer>
         <LoginPanel refresh={false}/>
-        <DetailImage src='http://localhost:3001/images/dota-logo.png'/>
+        <DetailImage src='/images/dota-logo.png'/>
         <DetailTitle>{this.state.tournament.timestamp}</DetailTitle>
         {teams}
       </ContentContainer>;
