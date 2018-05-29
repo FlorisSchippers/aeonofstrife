@@ -64,12 +64,12 @@ class LeagueDetailPage extends React.Component {
     let leagueDetailPage = ``;
     if (this.state.error) {
       leagueDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       leagueDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading league: {slugParser(this.props.location.pathname)}</Paragraph>
       </ContentContainer>;
     } else {

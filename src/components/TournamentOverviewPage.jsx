@@ -43,12 +43,12 @@ class TournamentOverviewPage extends React.Component {
     let tournamentOverviewPage = ``;
     if (this.state.error) {
       tournamentOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       tournamentOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading tournaments...</Paragraph>
       </ContentContainer>;
     } else {
@@ -58,7 +58,7 @@ class TournamentOverviewPage extends React.Component {
                   key={i}>{tournament.timestamp}</PageLink>
       );
       tournamentOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         {tournaments}
       </ContentContainer>
     }

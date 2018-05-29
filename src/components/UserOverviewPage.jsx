@@ -43,12 +43,12 @@ class UserOverviewPage extends React.Component {
     let userOverviewPage = ``;
     if (this.state.error) {
       userOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       userOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading users...</Paragraph>
       </ContentContainer>;
     } else {
@@ -58,7 +58,7 @@ class UserOverviewPage extends React.Component {
                   key={i}>{user.displayName}</PageLink>
       );
       userOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         {users}
       </ContentContainer>
     }

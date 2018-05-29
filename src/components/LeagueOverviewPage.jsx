@@ -43,12 +43,12 @@ class LeagueOverviewPage extends React.Component {
     let leagueOverviewPage = ``;
     if (this.state.error) {
       leagueOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       leagueOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading leagues...</Paragraph>
       </ContentContainer>;
     } else {
@@ -58,7 +58,7 @@ class LeagueOverviewPage extends React.Component {
                   key={i}>{league.timestamp}</PageLink>
       );
       leagueOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         {leagues}
       </ContentContainer>
     }

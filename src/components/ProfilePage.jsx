@@ -1,28 +1,30 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import Container from '../glamorous/structure/Container';
-import ContentContainer from '../glamorous/structure/ContentContainer';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
+import Container from '../glamorous/structure/Container';
+import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
 import Title from '../glamorous/text/Title';
+import PageLink from '../glamorous/text/PageLink';
 import FormGroup from '../glamorous/form/FormGroup';
-import ControlLabel from '../glamorous/form/ControlLabel';
+import FormLabel from '../glamorous/form/FormLabel';
 import FormControl from '../glamorous/form/FormControl';
-import Button from '../glamorous/form/FormButton';
+import FormButton from '../glamorous/form/FormButton';
 
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props);
     // Bindings
     this.state = {
-      user: ``,
       id: ``,
-      loading: false,
-      error: null,
+      email: ``,
       displayName: ``,
       photoURL: ``,
+      team: ``,
+      loading: false,
+      error: null,
     };
     // Bindings
     this.validateForm = this.validateForm.bind(this);
@@ -31,32 +33,83 @@ class ProfilePage extends React.Component {
   componentDidMount() {
     this.setState({loading: true});
     let currentUser = firebase.auth().currentUser;
-    if (currentUser !== null && currentUser.hasOwnProperty('displayName')) {
-      this.setState({email: currentUser.displayName});
-      let user = ``;
+    if (currentUser !== null) {
+      this.setState({
+        email: currentUser.email,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+      });
+
       let id = ``;
-      if (this.state.user.length === 0) {
-        firestore.collection('users').where('displayName', '==', currentUser.displayName).get()
-          .catch((error) => {
-            this.setState({error: error});
-            this.setState({loading: false});
-          })
-          .then((querySnapshot) => {
-            querySnapshot.forEach(function (doc) {
-              user = doc.data();
-              id = doc.id;
-            });
-            this.setState({user: user});
-            this.setState({id: id});
-            this.setState({displayName: this.state.user.displayName});
-            this.setState({photoURL: this.state.user.photoURL});
-            this.setState({loading: false});
+      firestore.collection('users').where('displayName', '==', currentUser.displayName).get()
+        .catch((error) => {
+          this.setState({error: error});
+          this.setState({loading: false});
+        })
+        .then((userQuerySnapshot) => {
+          userQuerySnapshot.forEach((userDoc) => {
+            if (userDoc.id !== 'model') {
+              id = userDoc.id;
+            }
           });
-      }
+          this.setState({id: id});
+
+          let team = ``;
+          let beta = 'players.' + this.state.id;
+          firestore.collection('teams').where(beta, '==', true).get()
+            .catch((error) => {
+              this.setState({error: error});
+              this.setState({loading: false});
+            })
+            .then((teamQuerySnapshot) => {
+              teamQuerySnapshot.forEach((teamDoc) => {
+                if (teamDoc.id !== 'model') {
+                  team = teamDoc.data();
+                  team.id = teamDoc.id;
+                }
+              });
+              this.setState({team: team});
+              this.setState({loading: false});
+            });
+
+        });
     } else {
-      // this.props.history.push('/');
+      this.props.history.push('/');
     }
   }
+
+  handleLeaveTeam = event => {
+    event.preventDefault();
+    let beta = {
+      players: this.state.team.players,
+    };
+    delete beta.players[this.state.id];
+    firestore.collection('teams').doc(this.state.team.id).update(beta)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        let data = {team: ``};
+        firestore.collection('users').doc(this.state.id).update(data)
+          .catch((error) => {
+            alert(error.message);
+          })
+          .then(() => {
+            this.setState({team: ``});
+          });
+      });
+  };
+
+  handleCreateTeam = event => {
+    event.preventDefault();
+    this.props.history.push({
+      pathname: `/teams/new`,
+      state: {
+        userId: this.state.id,
+        teamId: this.state.team.id,
+      }
+    });
+  };
 
   validateForm() {
     return this.state.displayName.length > 0 && this.state.photoURL.length > 0;
@@ -67,50 +120,70 @@ class ProfilePage extends React.Component {
   };
 
   handleSubmit = event => {
+    event.preventDefault();
     let data = {
       displayName: this.state.displayName,
       photoURL: this.state.photoURL,
     };
-    console.log(this.state.displayName);
-    console.log(this.state.photoURL);
-    firebase.auth().currentUser.updateProfile({
-      displayName: this.state.displayName,
-      photoURL: this.state.photoURL,
-    })
+    firebase.auth().currentUser.updateProfile(data)
       .catch((error) => {
-        console.log(error);
+        alert(error.message);
       })
       .then(() => {
-        firestore.collection('users').doc(this.state.id).set(data)
+        firestore.collection('users').doc(this.state.id).update(data)
           .catch((error) => {
-            console.log(error);
+            alert(error.message);
           })
           .then(() => {
             this.props.history.push('/');
           });
       });
-    event.preventDefault();
   };
 
   render() {
     let userDetailPage = ``;
     if (this.state.error) {
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading your profile...</Paragraph>
       </ContentContainer>;
     } else {
+      let currentTeam = ``;
+      if (this.state.team !== ``) {
+        currentTeam = <FormGroup controlId="team" bsSize="large">
+          <FormLabel style={{marginTop: '10px'}}>Team</FormLabel>
+          <PageLink style={{
+            display: 'table',
+            marginLeft: '0px',
+            fontSize: '22px'
+          }}
+                    to={'/teams/' + this.state.team.displayName}>
+            {this.state.team.displayName}
+          </PageLink>
+          <FormButton style={{marginTop: '15px'}} onClick={this.handleLeaveTeam}>
+            Leave team
+          </FormButton>
+        </FormGroup>;
+      } else {
+        currentTeam = <FormGroup controlId="team" bsSize="large">
+          <FormLabel style={{marginTop: '10px'}}>Team</FormLabel>
+          <FormLabel >No current team</FormLabel>
+          <FormButton onClick={this.handleCreateTeam}>
+            Create a team
+          </FormButton>
+        </FormGroup>;
+      }
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Title>Update your profile</Title>
+        <LoginPanel/>
+        <Title>Manage your profile</Title>
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="displayName" bsSize="large">
-            <ControlLabel>Display Name</ControlLabel>
+            <FormLabel>Display Name</FormLabel>
             <FormControl
               autoFocus
               type="text"
@@ -120,21 +193,18 @@ class ProfilePage extends React.Component {
             />
           </FormGroup>
           <FormGroup controlId="photoURL" bsSize="large">
-            <ControlLabel>Photo URL</ControlLabel>
+            <FormLabel>Photo URL</FormLabel>
             <FormControl
-              autoFocus
               type="text"
               id="photoURL"
               value={this.state.photoURL}
               onChange={this.handleChange}
             />
           </FormGroup>
-          <Button
-            type="submit"
-            disabled={!this.validateForm()}
-          >
+          <FormButton type="submit" disabled={!this.validateForm()}>
             Save
-          </Button>
+          </FormButton>
+          {currentTeam}
         </form>
       </ContentContainer>;
     }

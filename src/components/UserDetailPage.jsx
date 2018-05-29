@@ -43,17 +43,17 @@ class UserDetailPage extends React.Component {
     let userDetailPage = ``;
     if (this.state.error) {
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading {slugParser(this.props.location.pathname)}'s profile...</Paragraph>
       </ContentContainer>;
     } else {
       userDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <UserImage src={this.state.user.photoURL}/>
         <UserTitle>{this.state.user.displayName}</UserTitle>
       </ContentContainer>;

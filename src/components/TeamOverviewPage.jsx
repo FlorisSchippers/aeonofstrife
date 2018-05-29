@@ -43,12 +43,12 @@ class TeamOverviewPage extends React.Component {
     let teamOverviewPage = ``;
     if (this.state.error) {
       teamOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       teamOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading teams...</Paragraph>
       </ContentContainer>;
     } else {
@@ -58,7 +58,7 @@ class TeamOverviewPage extends React.Component {
                   key={i}>{team.displayName}</PageLink>
       );
       teamOverviewPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         {teams}
       </ContentContainer>
     }

@@ -10,23 +10,36 @@ import FormLabel from '../glamorous/form/FormLabel';
 import FormControl from '../glamorous/form/FormControl';
 import FormButton from '../glamorous/form/FormButton';
 
-class RegisterPage extends React.Component {
+class NewTeamPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       displayName: ``,
-      email: ``,
-      password: ``,
-      confirmPassword: ``,
       photoURL: `https://dutchdota.com/images/profile_default.jpg`,
-      team: ``,
+      joinCode: ``,
+      confirmJoinCode: ``,
     };
     // Bindings
     this.validateForm = this.validateForm.bind(this);
   }
 
+  componentDidMount() {
+    let currentUser = firebase.auth().currentUser;
+    if (currentUser !== null) {
+      if (this.props.location.state !== undefined) {
+        if (this.props.location.state.teamId !== undefined) {
+          this.props.history.push('/');
+        }
+      } else {
+        this.props.history.push('/');
+      }
+    } else {
+      this.props.history.push('/');
+    }
+  }
+
   validateForm() {
-    return this.state.displayName.length > 0 && this.state.email.length > 0 && this.state.password.length > 0 && this.state.password === this.state.confirmPassword;
+    return this.state.displayName.length > 0 && this.state.photoURL.length > 0 && this.state.joinCode.length > 0 && this.state.joinCode === this.state.confirmJoinCode;
   }
 
   handleChange = event => {
@@ -35,37 +48,34 @@ class RegisterPage extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    let state = this.state;
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .catch(function (error) {
+    let beta = {};
+    beta[this.props.location.state.userId] = true;
+    firestore.collection('teams').add({
+      displayName: this.state.displayName,
+      photoURL: this.state.photoURL,
+      joinCode: this.state.joinCode,
+      players: beta,
+    })
+      .catch((error) => {
         alert(error.message);
       })
       .then(() => {
-        let user = firebase.auth().currentUser;
-        // TODO: Activate Email Verification
-        // user.sendEmailVerification()
-        //   .catch((error) => {
-        //     alert(error.message);
-        //   });
-        user.updateProfile({
-          displayName: state.displayName,
-          photoURL: state.photoURL,
-        })
+        firestore.collection('teams').where('displayName', '==', this.state.displayName).get()
           .catch((error) => {
             alert(error.message);
           })
-          .then(() => {
-            firestore.collection('users').add({
-              email: state.email,
-              displayName: state.displayName,
-              photoURL: state.photoURL,
-              team: state.team,
-            })
+          .then((teamQuerySnapshot) => {
+            let teamId = ``;
+            teamQuerySnapshot.forEach((teamDocSnapshot) => {
+              teamId = teamDocSnapshot.id;
+            });
+            let data = {team: teamId};
+            firestore.collection('users').doc(this.props.location.state.userId).update(data)
               .catch((error) => {
                 alert(error.message);
               })
               .then(() => {
-                this.props.history.push('/');
+                this.props.history.push('/users/me');
               });
           });
       });
@@ -77,7 +87,7 @@ class RegisterPage extends React.Component {
         <SidebarPanel/>
         <ContentContainer>
           <LoginPanel/>
-          <Title>Register at Aeon of Strife</Title>
+          <Title>Create a new team</Title>
           <form onSubmit={this.handleSubmit}>
             <FormGroup controlId="displayName" bsSize="large">
               <FormLabel>Display Name</FormLabel>
@@ -89,35 +99,35 @@ class RegisterPage extends React.Component {
                 onChange={this.handleChange}
               />
             </FormGroup>
-            <FormGroup controlId="email" bsSize="large">
-              <FormLabel>Email Address</FormLabel>
+            <FormGroup controlId="photoURL" bsSize="large">
+              <FormLabel>Photo URL</FormLabel>
               <FormControl
-                type="email"
-                id="email"
-                value={this.state.email}
+                type="text"
+                id="photoURL"
+                value={this.state.photoURL}
                 onChange={this.handleChange}
               />
             </FormGroup>
-            <FormGroup controlId="password" bsSize="large">
-              <FormLabel>Set Password</FormLabel>
+            <FormGroup controlId="joinCode" bsSize="large">
+              <FormLabel>Set join code</FormLabel>
               <FormControl
                 type="password"
-                id="password"
+                id="joinCode"
                 value={this.state.password}
                 onChange={this.handleChange}
               />
             </FormGroup>
-            <FormGroup controlId="confirmPassword" bsSize="large">
-              <FormLabel>Confirm Password</FormLabel>
+            <FormGroup controlId="confirmJoinCode" bsSize="large">
+              <FormLabel>Confirm joincode</FormLabel>
               <FormControl
                 type="password"
-                id="confirmPassword"
-                value={this.state.confirmPassword}
+                id="confirmJoinCode"
+                value={this.state.confirmJoinCode}
                 onChange={this.handleChange}
               />
             </FormGroup>
             <FormButton type="submit" disabled={!this.validateForm()}>
-              Register
+              Create
             </FormButton>
           </form>
         </ContentContainer>
@@ -126,6 +136,6 @@ class RegisterPage extends React.Component {
   }
 }
 
-RegisterPage.propTypes = {};
+NewTeamPage.propTypes = {};
 
-export default withRouter(RegisterPage);
+export default withRouter(NewTeamPage);

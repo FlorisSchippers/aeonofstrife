@@ -1,12 +1,12 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
+import SidebarPanel from './SidebarPanel';
+import LoginPanel from './LoginPanel';
 import Container from '../glamorous/structure/Container.jsx';
 import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
-import SidebarPanel from './SidebarPanel';
 import Title from '../glamorous/text/Title.jsx';
-import LoginPanel from './LoginPanel';
 import FormGroup from '../glamorous/form/FormGroup';
-import ControlLabel from '../glamorous/form/ControlLabel';
+import FormLabel from '../glamorous/form/FormLabel';
 import FormControl from '../glamorous/form/FormControl';
 import FormButton from '../glamorous/form/FormButton';
 
@@ -16,7 +16,6 @@ class LoginPage extends React.Component {
     this.state = {
       email: ``,
       password: ``,
-      login: ``,
     };
     // Bindings
     this.validateForm = this.validateForm.bind(this);
@@ -27,35 +26,33 @@ class LoginPage extends React.Component {
   }
 
   handleChange = event => {
+    event.preventDefault();
     this.setState({
       [event.target.id]: event.target.value
     });
   };
 
   handleSubmit = event => {
+    event.preventDefault();
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
       .catch((error) => {
         alert(error.message);
       })
-      .then((data) => {
-        this.setState({login: data});
+      .then(() => {
         this.props.history.push('/');
       });
-    event.preventDefault();
   };
 
   render() {
-    let title = `Login to Aeon of Strife`;
-
     return (
       <Container>
         <SidebarPanel/>
         <ContentContainer>
-          <LoginPanel refresh={this.state.login}/>
-          <Title>{title}</Title>
+          <LoginPanel/>
+          <Title>Login to Aeon of Strife</Title>
           <form onSubmit={this.handleSubmit}>
             <FormGroup controlId="email" bsSize="large">
-              <ControlLabel>Email</ControlLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl
                 autoFocus
                 type="email"
@@ -65,7 +62,7 @@ class LoginPage extends React.Component {
               />
             </FormGroup>
             <FormGroup controlId="password" bsSize="large">
-              <ControlLabel>Password</ControlLabel>
+              <FormLabel>Password</FormLabel>
               <FormControl
                 type="password"
                 id="password"
@@ -73,10 +70,7 @@ class LoginPage extends React.Component {
                 onChange={this.handleChange}
               />
             </FormGroup>
-            <FormButton
-              type="submit"
-              disabled={!this.validateForm()}
-            >
+            <FormButton type="submit" disabled={!this.validateForm()}>
               Login
             </FormButton>
           </form>

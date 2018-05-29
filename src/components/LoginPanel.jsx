@@ -14,38 +14,36 @@ class LoginPanel extends React.Component {
 
   componentDidMount() {
     let currentUser = firebase.auth().currentUser;
-    if (currentUser !== null && currentUser.hasOwnProperty('displayName')) {
+    if (currentUser !== null) {
       this.setState({login: currentUser});
     }
   }
 
   logout = event => {
-    firebase.auth().signOut();
-    this.setState({login: `loggedOut`});
-    this.props.history.push('/');
     event.preventDefault();
+    firebase.auth().signOut()
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        this.setState({login: ``});
+        this.props.history.push('/');
+      });
   };
 
   render() {
-    if (this.state.login === `` && this.props.refresh !== null && this.props.refresh.hasOwnProperty('displayName')) {
+    if (this.state.login === ``) {
       return (
         <LoginContainer>
-          <LoginLink to={'/users/me'}>{this.props.refresh.displayName}</LoginLink>
-          <LoginButton onClick={this.logout}>Logout</LoginButton>
-        </LoginContainer>
-      );
-    } else if (this.state.login.hasOwnProperty('displayName')) {
-      return (
-        <LoginContainer>
-          <LoginLink to={'/users/me'}>{this.state.login.displayName}</LoginLink>
-          <LoginButton onClick={this.logout}>Logout</LoginButton>
+          <LoginLink to={'/login'}>Login</LoginLink>
+          <LoginLink style={{top: '50px'}} to={'/register'}>Register</LoginLink>
         </LoginContainer>
       );
     } else {
       return (
         <LoginContainer>
-          <LoginLink to={'/login'}>Login</LoginLink>
-          <LoginLink style={{top: '50px'}} to={'/register'}>Register</LoginLink>
+          <LoginLink to={'/users/me'}>{this.state.login.displayName}</LoginLink>
+          <LoginButton onClick={this.logout}>Logout</LoginButton>
         </LoginContainer>
       );
     }

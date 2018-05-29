@@ -1,9 +1,9 @@
 import React from 'react';
+import SidebarPanel from './SidebarPanel';
+import LoginPanel from './LoginPanel';
 import Container from '../glamorous/structure/Container.jsx';
 import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
-import SidebarPanel from './SidebarPanel';
 import Title from '../glamorous/text/Title.jsx';
-import LoginPanel from '../components/LoginPanel';
 
 class HomePage extends React.Component {
   constructor() {
@@ -12,14 +12,12 @@ class HomePage extends React.Component {
   }
 
   render() {
-    let title = `Welcome to Aeon of Strife`;
-
     return (
       <Container>
         <SidebarPanel/>
         <ContentContainer>
-          <LoginPanel refresh={false}/>
-          <Title>{title}</Title>
+          <LoginPanel/>
+          <Title>Welcome to Aeon of Strife</Title>
         </ContentContainer>
       </Container>
     );

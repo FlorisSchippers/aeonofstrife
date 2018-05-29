@@ -6,8 +6,9 @@ import LoginPage from '../components/LoginPage';
 import ProfilePage from '../components/ProfilePage';
 import UserOverviewPage from '../components/UserOverviewPage';
 import UserDetailPage from '../components/UserDetailPage';
-import TeamOverviewPage from "../components/TeamOverviewPage";
-import TeamDetailPage from "../components/TeamDetailPage";
+import TeamOverviewPage from '../components/TeamOverviewPage';
+import NewTeamPage from '../components/NewTeamPage';
+import TeamDetailPage from '../components/TeamDetailPage';
 import LeagueOverviewPage from '../components/LeagueOverviewPage';
 import LeagueDetailPage from '../components/LeagueDetailPage';
 import TournamentOverviewPage from '../components/TournamentOverviewPage';
@@ -27,12 +28,12 @@ class Root extends Component {
 
   initializeFirebase() {
     // const config = {
-    //   apiKey: "AIzaSyCG3UHB04cRETXWBCXT70hJ4t7iaZ5H9fg",
-    //   authDomain: "aeonofstrife-1.firebaseapp.com",
-    //   databaseURL: "https://aeonofstrife-1.firebaseio.com",
-    //   projectId: "aeonofstrife-1",
-    //   storageBucket: "aeonofstrife-1.appspot.com",
-    //   messagingSenderId: "603290881912"
+    //   apiKey: 'AIzaSyCG3UHB04cRETXWBCXT70hJ4t7iaZ5H9fg',
+    //   authDomain: 'aeonofstrife-1.firebaseapp.com',
+    //   databaseURL: 'https://aeonofstrife-1.firebaseio.com',
+    //   projectId: 'aeonofstrife-1',
+    //   storageBucket: 'aeonofstrife-1.appspot.com',
+    //   messagingSenderId: '603290881912'
     // };
     // firebase.initializeApp(config);
     this.state.firebase = true;
@@ -48,6 +49,7 @@ class Root extends Component {
         <Route exact path='/users/me' component={ProfilePage}/>
         <Route exact path='/users/:user' component={UserDetailPage}/>
         <Route exact path='/teams' component={TeamOverviewPage}/>
+        <Route exact path='/teams/new' component={NewTeamPage}/>
         <Route exact path='/teams/:team' component={TeamDetailPage}/>
         <Route exact path='/leagues' component={LeagueOverviewPage}/>
         <Route exact path='/leagues/:league' component={LeagueDetailPage}/>

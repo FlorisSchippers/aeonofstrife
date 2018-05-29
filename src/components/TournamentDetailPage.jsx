@@ -64,12 +64,12 @@ class TournamentDetailPage extends React.Component {
     let tournamentDetailPage = ``;
     if (this.state.error) {
       tournamentDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <Paragraph>{error.message}</Paragraph>;
+        <LoginPanel/>
+        <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
       tournamentDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <Paragraph>Loading tournament: {slugParser(this.props.location.pathname)}</Paragraph>
       </ContentContainer>;
     } else {
@@ -79,7 +79,7 @@ class TournamentDetailPage extends React.Component {
                   key={i}>{team.displayName}</PageLink>
       );
       tournamentDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
+        <LoginPanel/>
         <DetailImage src='/images/dota-logo.png'/>
         <DetailTitle>{this.state.tournament.timestamp}</DetailTitle>
         {teams}

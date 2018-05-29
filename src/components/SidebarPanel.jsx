@@ -1,9 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import Logo from '../glamorous/structure/Logo.jsx';
 import SidebarContainer from '../glamorous/sidebar/SidebarContainer.jsx';
 import SidebarElement from '../glamorous/sidebar/SidebarElement';
 import SidebarLink from '../glamorous/sidebar/SidebarLink.jsx';
-import Logo from '../glamorous/structure/Logo.jsx';
 
 class SidebarPanel extends React.Component {
   constructor(props) {
@@ -11,8 +11,8 @@ class SidebarPanel extends React.Component {
   }
 
   render() {
-    let items = ['Users', 'Teams', 'Leagues', 'Tournaments'];
-    let sidebar = items.map((item, i) =>
+    let sidebarItems = ['Users', 'Teams', 'Leagues', 'Tournaments'];
+    let sidebar = sidebarItems.map((item, i) =>
       <SidebarElement key={i}>
         <SidebarLink to={'/' + item.toLowerCase()}>{item}</SidebarLink>
       </SidebarElement>
