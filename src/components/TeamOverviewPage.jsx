@@ -53,8 +53,7 @@ class TeamOverviewPage extends React.Component {
       </ContentContainer>;
     } else {
       let teams = this.state.teams.map((team, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/teams/' + team.displayName}
+        <PageLink to={'/teams/' + team.displayName}
                   key={i}>{team.displayName}</PageLink>
       );
       teamOverviewPage = <ContentContainer>

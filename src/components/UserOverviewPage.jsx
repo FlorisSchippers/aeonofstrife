@@ -53,8 +53,7 @@ class UserOverviewPage extends React.Component {
       </ContentContainer>;
     } else {
       let users = this.state.users.map((user, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/users/' + user.displayName}
+        <PageLink to={'/users/' + user.displayName}
                   key={i}>{user.displayName}</PageLink>
       );
       userOverviewPage = <ContentContainer>

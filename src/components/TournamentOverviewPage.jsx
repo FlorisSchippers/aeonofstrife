@@ -1,11 +1,11 @@
 import React from 'react';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
+import TournamentPanel from './TournamentPanel';
 import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
-import PageLink from '../glamorous/text/PageLink';
 
 class TournamentOverviewPage extends React.Component {
   constructor(props) {
@@ -21,6 +21,7 @@ class TournamentOverviewPage extends React.Component {
   componentDidMount() {
     this.setState({loading: true});
     let tournaments = [];
+    let tournament = ``;
     if (this.state.tournaments.length === 0) {
       firestore.collection('tournaments').get()
         .catch((error) => {
@@ -30,7 +31,9 @@ class TournamentOverviewPage extends React.Component {
         .then((querySnapshot) => {
           querySnapshot.forEach(function (docSnapshot) {
             if (docSnapshot.id !== 'model') {
-              tournaments.push(docSnapshot.data());
+              tournament = docSnapshot.data();
+              tournament.id = docSnapshot.id;
+              tournaments.push(tournament);
             }
           });
           this.setState({tournaments: tournaments});
@@ -53,9 +56,7 @@ class TournamentOverviewPage extends React.Component {
       </ContentContainer>;
     } else {
       let tournaments = this.state.tournaments.map((tournament, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/tournaments/' + tournament.timestamp}
-                  key={i}>{tournament.timestamp}</PageLink>
+        <TournamentPanel tournament={tournament} key={i}/>
       );
       tournamentOverviewPage = <ContentContainer>
         <LoginPanel/>

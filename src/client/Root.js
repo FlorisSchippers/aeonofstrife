@@ -51,8 +51,8 @@ class Root extends Component {
         <Route exact path='/teams' component={TeamOverviewPage}/>
         <Route exact path='/teams/new' component={NewTeamPage}/>
         <Route exact path='/teams/:team' component={TeamDetailPage}/>
-        <Route exact path='/leagues' component={LeagueOverviewPage}/>
-        <Route exact path='/leagues/:league' component={LeagueDetailPage}/>
+        <Route exact path='/league' component={LeagueOverviewPage}/>
+        <Route exact path='/league/:division' component={LeagueDetailPage}/>
         <Route exact path='/tournaments' component={TournamentOverviewPage}/>
         <Route exact path='/tournaments/:tournament' component={TournamentDetailPage}/>
       </Switch>

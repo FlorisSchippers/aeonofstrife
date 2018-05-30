@@ -58,6 +58,7 @@ class TeamDetailPage extends React.Component {
             team.id = teamDocSnapshot.id;
           });
           this.setState({team: team});
+
           if (Object.keys(this.state.team.players).length > 0) {
             Object.keys(this.state.team.players).forEach((playerId) => {
               if (this.state.team.players[playerId] === true) {
@@ -148,15 +149,14 @@ class TeamDetailPage extends React.Component {
       </ContentContainer>;
     } else {
       let players = this.state.players.map((player, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/users/' + player.displayName}
+        <PageLink to={'/users/' + player.displayName}
                   key={i}>{player.displayName}</PageLink>
       );
       let joinCodeForm = ``;
       if (this.state.currentUser !== ``) {
         joinCodeForm = <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="joinCode" bsSize="large">
-            <FormLabel>Join code</FormLabel>
+            <FormLabel css={{marginTop: '25px'}}>Join code</FormLabel>
             <FormControl
               autoFocus
               type="text"

@@ -18,10 +18,10 @@ class ProfilePage extends React.Component {
     super(props);
     // Bindings
     this.state = {
-      id: ``,
       email: ``,
       displayName: ``,
       photoURL: ``,
+      user: ``,
       team: ``,
       loading: false,
       error: null,
@@ -40,7 +40,7 @@ class ProfilePage extends React.Component {
         photoURL: currentUser.photoURL,
       });
 
-      let id = ``;
+      let user = ``;
       firestore.collection('users').where('displayName', '==', currentUser.displayName).get()
         .catch((error) => {
           this.setState({error: error});
@@ -49,30 +49,30 @@ class ProfilePage extends React.Component {
         .then((userQuerySnapshot) => {
           userQuerySnapshot.forEach((userDoc) => {
             if (userDoc.id !== 'model') {
-              id = userDoc.id;
+              user = userDoc.data();
+              user.id = userDoc.id;
             }
           });
-          this.setState({id: id});
+          this.setState({user: user});
 
-          let team = ``;
-          let beta = 'players.' + this.state.id;
-          firestore.collection('teams').where(beta, '==', true).get()
-            .catch((error) => {
-              this.setState({error: error});
-              this.setState({loading: false});
-            })
-            .then((teamQuerySnapshot) => {
-              teamQuerySnapshot.forEach((teamDoc) => {
-                if (teamDoc.id !== 'model') {
-                  team = teamDoc.data();
-                  team.id = teamDoc.id;
-                }
+          if (this.state.user.team) {
+            let team = ``;
+            firestore.collection('teams').doc(this.state.user.team).get()
+              .catch((error) => {
+                this.setState({error: error});
+                this.setState({loading: false});
+              })
+              .then((teamQuerySnapshot) => {
+                team = teamQuerySnapshot.data();
+                team.id = this.state.user.team;
+                this.setState({team: team});
+                this.setState({loading: false});
               });
-              this.setState({team: team});
-              this.setState({loading: false});
-            });
-
+          } else {
+            this.setState({loading: false});
+          }
         });
+
     } else {
       this.props.history.push('/');
     }
@@ -83,14 +83,14 @@ class ProfilePage extends React.Component {
     let beta = {
       players: this.state.team.players,
     };
-    delete beta.players[this.state.id];
+    delete beta.players[this.state.user.id];
     firestore.collection('teams').doc(this.state.team.id).update(beta)
       .catch((error) => {
         alert(error.message);
       })
       .then(() => {
         let data = {team: ``};
-        firestore.collection('users').doc(this.state.id).update(data)
+        firestore.collection('users').doc(this.state.user.id).update(data)
           .catch((error) => {
             alert(error.message);
           })
@@ -105,7 +105,7 @@ class ProfilePage extends React.Component {
     this.props.history.push({
       pathname: `/teams/new`,
       state: {
-        userId: this.state.id,
+        userId: this.state.user.id,
         teamId: this.state.team.id,
       }
     });
@@ -130,7 +130,7 @@ class ProfilePage extends React.Component {
         alert(error.message);
       })
       .then(() => {
-        firestore.collection('users').doc(this.state.id).update(data)
+        firestore.collection('users').doc(this.state.user.id).update(data)
           .catch((error) => {
             alert(error.message);
           })
@@ -156,13 +156,8 @@ class ProfilePage extends React.Component {
       let currentTeam = ``;
       if (this.state.team !== ``) {
         currentTeam = <FormGroup controlId="team" bsSize="large">
-          <FormLabel style={{marginTop: '10px'}}>Team</FormLabel>
-          <PageLink style={{
-            display: 'table',
-            marginLeft: '0px',
-            fontSize: '22px'
-          }}
-                    to={'/teams/' + this.state.team.displayName}>
+          <FormLabel style={{marginTop: '15px'}}>Team</FormLabel>
+          <PageLink to={'/teams/' + this.state.team.displayName}>
             {this.state.team.displayName}
           </PageLink>
           <FormButton style={{marginTop: '15px'}} onClick={this.handleLeaveTeam}>
@@ -171,8 +166,8 @@ class ProfilePage extends React.Component {
         </FormGroup>;
       } else {
         currentTeam = <FormGroup controlId="team" bsSize="large">
-          <FormLabel style={{marginTop: '10px'}}>Team</FormLabel>
-          <FormLabel >No current team</FormLabel>
+          <FormLabel style={{marginTop: '15px'}}>Team</FormLabel>
+          <FormLabel>No current team</FormLabel>
           <FormButton onClick={this.handleCreateTeam}>
             Create a team
           </FormButton>

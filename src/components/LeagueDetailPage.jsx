@@ -27,7 +27,7 @@ class LeagueDetailPage extends React.Component {
     let league = ``;
     let teams = [];
     if (this.state.league.length === 0) {
-      firestore.collection('leagues').where('timestamp', '==', slugParser(this.props.location.pathname)).get()
+      firestore.collection('league').where('timestamp', '==', slugParser(this.props.location.pathname)).get()
         .catch((error) => {
           this.setState({error: error});
           this.setState({loading: false});
@@ -74,8 +74,7 @@ class LeagueDetailPage extends React.Component {
       </ContentContainer>;
     } else {
       let teams = this.state.teams.map((team, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/teams/' + team.displayName}
+        <PageLink to={'/teams/' + team.displayName}
                   key={i}>{team.displayName}</PageLink>
       );
       leagueDetailPage = <ContentContainer>
@@ -88,7 +87,7 @@ class LeagueDetailPage extends React.Component {
 
     return (
       <Container>
-        <BackButton to={'/leagues'}/>
+        <BackButton to={'/league'}/>
         <SidebarPanel/>
         {leagueDetailPage}
       </Container>

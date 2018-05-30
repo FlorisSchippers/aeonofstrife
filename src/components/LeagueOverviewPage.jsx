@@ -12,7 +12,7 @@ class LeagueOverviewPage extends React.Component {
     super(props);
     // Bindings
     this.state = {
-      leagues: [],
+      divisions: [],
       loading: false,
       error: null,
     };
@@ -20,9 +20,9 @@ class LeagueOverviewPage extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true});
-    let leagues = [];
-    if (this.state.leagues.length === 0) {
-      firestore.collection('leagues').get()
+    let divisions = [];
+    if (this.state.divisions.length === 0) {
+      firestore.collection('league').get()
         .catch((error) => {
           this.setState({error: error});
           this.setState({loading: false});
@@ -30,10 +30,10 @@ class LeagueOverviewPage extends React.Component {
         .then((querySnapshot) => {
           querySnapshot.forEach(function (docSnapshot) {
             if (docSnapshot.id !== 'model') {
-              leagues.push(docSnapshot.data());
+              divisions.push(docSnapshot.data());
             }
           });
-          this.setState({leagues: leagues});
+          this.setState({divisions: divisions});
           this.setState({loading: false});
         });
     }
@@ -49,17 +49,16 @@ class LeagueOverviewPage extends React.Component {
     } else if (this.state.loading) {
       leagueOverviewPage = <ContentContainer>
         <LoginPanel/>
-        <Paragraph>Loading leagues...</Paragraph>
+        <Paragraph>Loading league...</Paragraph>
       </ContentContainer>;
     } else {
-      let leagues = this.state.leagues.map((league, i) =>
-        <PageLink style={{display: 'table'}}
-                  to={'/leagues/' + league.timestamp}
-                  key={i}>{league.timestamp}</PageLink>
+      let divisions = this.state.divisions.map((division, i) =>
+        <PageLink to={'/league/division' + division.division.toString()}
+                  key={i}>Division {division.division.toString()}</PageLink>
       );
       leagueOverviewPage = <ContentContainer>
         <LoginPanel/>
-        {leagues}
+        {divisions}
       </ContentContainer>
     }
 

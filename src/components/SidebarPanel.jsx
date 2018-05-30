@@ -11,7 +11,7 @@ class SidebarPanel extends React.Component {
   }
 
   render() {
-    let sidebarItems = ['Users', 'Teams', 'Leagues', 'Tournaments'];
+    let sidebarItems = ['Users', 'Teams', 'Tournaments', 'League'];
     let sidebar = sidebarItems.map((item, i) =>
       <SidebarElement key={i}>
         <SidebarLink to={'/' + item.toLowerCase()}>{item}</SidebarLink>

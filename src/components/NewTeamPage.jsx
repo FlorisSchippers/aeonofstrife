@@ -15,7 +15,7 @@ class NewTeamPage extends React.Component {
     super(props);
     this.state = {
       displayName: ``,
-      photoURL: `https://dutchdota.com/images/profile_default.jpg`,
+      photoURL: `/images/default-image.jpg`,
       joinCode: ``,
       confirmJoinCode: ``,
     };

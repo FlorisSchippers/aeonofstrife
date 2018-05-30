@@ -18,7 +18,7 @@ class RegisterPage extends React.Component {
       email: ``,
       password: ``,
       confirmPassword: ``,
-      photoURL: `https://dutchdota.com/images/profile_default.jpg`,
+      photoURL: `/images/default-image.jpg`,
       team: ``,
     };
     // Bindings
