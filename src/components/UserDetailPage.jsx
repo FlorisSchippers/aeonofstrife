@@ -4,9 +4,9 @@ import ContentContainer from '../glamorous/structure/ContentContainer';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
 import BackButton from '../glamorous/buttons/BackButton';
-import UserTitle from '../glamorous/detail/DetailTitle';
+import DetailTitle from '../glamorous/detail/DetailTitle';
 import Paragraph from '../glamorous/text/Paragraph';
-import UserImage from '../glamorous/detail/DetailImage';
+import DetailImage from '../glamorous/detail/DetailImage';
 import slugParser from '../common/slugParser';
 
 class UserDetailPage extends React.Component {
@@ -52,10 +52,15 @@ class UserDetailPage extends React.Component {
         <Paragraph>Loading {slugParser(this.props.location.pathname)}'s profile...</Paragraph>
       </ContentContainer>;
     } else {
+      let captain = ``;
+      if (this.state.user.captain) {
+        captain = '👑';
+      }
       userDetailPage = <ContentContainer>
         <LoginPanel/>
-        <UserImage src={this.state.user.photoURL}/>
-        <UserTitle>{this.state.user.displayName}</UserTitle>
+        <DetailImage src={this.state.user.photoURL}/>
+        <DetailTitle>{this.state.user.displayName} {captain}</DetailTitle>
+        <Paragraph>Skill Rating: {this.state.user.skillRating}</Paragraph>
       </ContentContainer>;
     }
 

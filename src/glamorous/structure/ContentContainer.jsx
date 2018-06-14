@@ -1,25 +1,20 @@
 import glamorous from 'glamorous';
 
-const mediaQueries = {
-  mobile_landscape: '@media only screen and (min-width: 640px)',
-  tablet_portrait: '@media only screen and (min-width: 768px)',
-  tablet_landscape: '@media only screen and (min-width: 1024px)',
-  desktop: '@media only screen and (min-width: 1250px)',
-};
-
 export default glamorous.div({
+  display: 'inline-block',
+  position: 'relative',
   float: 'left',
+  width: 'calc(100% - 250px - 50px)',
+  minHeight: 'calc(100% - 50px)',
+  margin: '0 0 0 250px',
+  padding: '25px',
+
   fontFamily: 'Open Sans',
   fontSize: '17px',
   lineHeight: '1.5',
-  width: 'calc(100% - 50px)',
-  height: 'calc(100% - 50px)',
-  display: 'inline-block',
-  position: 'relative',
-  padding: '25px',
 
-  [mediaQueries.tablet_portrait]: {
-    float: 'right',
-    width: 'calc(100% - 250px - 50px)',
-  }
+  backgroundImage: 'url(/images/dota-bg-medium.jpg)',
+  backgroundPosition: 'top',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
 });

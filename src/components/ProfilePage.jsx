@@ -18,10 +18,12 @@ class ProfilePage extends React.Component {
     super(props);
     // Bindings
     this.state = {
+      user: ``,
       email: ``,
       displayName: ``,
       photoURL: ``,
-      user: ``,
+      skillRating: ``,
+      captain: ``,
       team: ``,
       loading: false,
       error: null,
@@ -53,7 +55,11 @@ class ProfilePage extends React.Component {
               user.id = userDoc.id;
             }
           });
-          this.setState({user: user});
+          this.setState({
+            user: user,
+            skillRating: user.skillRating,
+            captain: user.captain,
+          });
 
           if (this.state.user.team) {
             let team = ``;
@@ -119,11 +125,18 @@ class ProfilePage extends React.Component {
     this.setState({[event.target.id]: event.target.value});
   };
 
+  handleCaptainCheckbox = event => {
+    let state = !this.state.captain;
+    this.setState({captain: state});
+  };
+
   handleSubmit = event => {
     event.preventDefault();
     let data = {
       displayName: this.state.displayName,
       photoURL: this.state.photoURL,
+      skillRating: this.state.skillRating,
+      captain: this.state.captain,
     };
     firebase.auth().currentUser.updateProfile(data)
       .catch((error) => {
@@ -195,6 +208,25 @@ class ProfilePage extends React.Component {
               value={this.state.photoURL}
               onChange={this.handleChange}
             />
+          </FormGroup>
+          <FormGroup controlId="skillRating" bsSize="large">
+            <FormLabel>Skill Rating</FormLabel>
+            <FormControl
+              type="number"
+              id="skillRating"
+              value={this.state.skillRating}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <FormGroup controlId="captain" bsSize="large">
+            <FormControl
+              style={{display: 'inline-block', width: '33px'}}
+              type="checkbox"
+              id="captain"
+              checked={this.state.captain}
+              onChange={this.handleCaptainCheckbox}
+            />
+            <FormLabel style={{display: 'inline-block', marginBottom: '15px'}}>Captain</FormLabel>
           </FormGroup>
           <FormButton type="submit" disabled={!this.validateForm()}>
             Save

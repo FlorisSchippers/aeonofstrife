@@ -19,6 +19,8 @@ class RegisterPage extends React.Component {
       password: ``,
       confirmPassword: ``,
       photoURL: `/images/default-image.jpg`,
+      skillRating: ``,
+      captain: false,
       team: ``,
     };
     // Bindings
@@ -59,6 +61,8 @@ class RegisterPage extends React.Component {
               email: state.email,
               displayName: state.displayName,
               photoURL: state.photoURL,
+              skillRating: state.skillRating,
+              captain: state.captain,
               team: state.team,
             })
               .catch((error) => {

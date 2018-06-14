@@ -4,12 +4,14 @@ import LoginPanel from './LoginPanel';
 import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import Paragraph from '../glamorous/text/Paragraph';
 import DetailTitle from '../glamorous/detail/DetailTitle';
 import DetailImage from '../glamorous/detail/DetailImage';
 import PageLink from '../glamorous/text/PageLink';
 import FormButton from '../glamorous/form/FormButton';
 import slugParser from '../common/slugParser';
+import matchMaker from '../common/matchMaker';
 
 class TournamentDetailPage extends React.Component {
   constructor(props) {
@@ -18,6 +20,7 @@ class TournamentDetailPage extends React.Component {
     this.state = {
       tournament: ``,
       players: [],
+      teams: [],
       currentUser: ``,
       loading: false,
       error: null,
@@ -105,6 +108,13 @@ class TournamentDetailPage extends React.Component {
       });
   };
 
+  handleCreateTeams = event => {
+    event.preventDefault();
+    let players = this.state.players;
+    let teams = matchMaker(players);
+    this.setState({teams: teams});
+  };
+
   render() {
     let tournamentDetailPage = ``;
     if (this.state.error) {
@@ -118,30 +128,91 @@ class TournamentDetailPage extends React.Component {
         <Paragraph>Loading tournament: {slugParser(this.props.location.pathname)}</Paragraph>
       </ContentContainer>;
     } else {
-      let players = this.state.players.map((player, i) =>
-        <PageLink to={'/users/' + player.displayName}
-                  key={i}>{player.displayName}</PageLink>
-      );
       let joinButton = ``;
       if (this.state.currentUser !== ``) {
-        joinButton = <FormButton css={{marginTop: '25px'}} onClick={this.handleJoinTourament}>
+        joinButton = <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleJoinTourament}>
           Join Tournament
         </FormButton>;
       }
+      let createTeamsButton = ``;
+      if (this.state.currentUser !== ``) {
+        createTeamsButton = <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleCreateTeams}>
+          Create Teams
+        </FormButton>;
+      }
+      let playerLinks = ``;
+      if (this.state.players.length > 0) {
+        playerLinks = this.state.players.map((player, i) =>
+          <PageLink to={'/users/' + player.displayName}
+                    key={i}>{player.displayName}</PageLink>
+        );
+      }
+      let teamsTab = <Tab disabled>Teams</Tab>;
+      let teamsTabTabs = ``;
+      let teamsTabPanels = ``;
+      let teamsPanel = ``;
+      if (this.state.teams.length > 0) {
+        console.log(this.state.teams);
+        teamsTabTabs = this.state.teams.map((team, i) =>
+          <Tab key={i}>Team {i + 1}</Tab>
+        );
+        teamsTabPanels = this.state.teams.map((team, i) =>
+          <TabPanel key={i}>
+            <Paragraph>Average Skill Rating: {team.averageSkillRating}</Paragraph>
+            {team.players.map((player, j) => {
+              return <PageLink to={'/users/' + player.displayName}
+                        key={j}>{player.displayName}</PageLink>;
+            })}
+          </TabPanel>
+        );
+        teamsTab = <Tab>Teams</Tab>;
+        teamsPanel = <Tabs>
+          <TabList>
+            {teamsTabTabs}
+          </TabList>
+          {teamsTabPanels}
+        </Tabs>
+      }
+      let bracketsTab = <Tab disabled>Brackets</Tab>;
+      let bracketsPanel = `hehe`;
+      let dateObject = new Date(this.state.tournament.timestamp * 1000);
+      let date = dateObject.getDate() + '-' + dateObject.getMonth() + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
       tournamentDetailPage = <ContentContainer>
         <LoginPanel/>
         <DetailImage src={this.state.tournament.photoURL}/>
         <DetailTitle>{this.state.tournament.id}</DetailTitle>
-        <Paragraph>Competing players:</Paragraph>
-        {players}
-        {joinButton}
+        <Tabs>
+          <TabList>
+            <Tab>Information</Tab>
+            <Tab>Players</Tab>
+            {teamsTab}
+            {bracketsTab}
+          </TabList>
+          <TabPanel>
+            <Paragraph>Tournament will start at: {date}</Paragraph>
+            <Paragraph>Current amount of players: {this.state.players.length}</Paragraph>
+            <Paragraph>This will result in a tournament draft of {Math.floor(this.state.players.length / 5)} teams of 5
+              players</Paragraph>
+            {joinButton}
+            {createTeamsButton}
+          </TabPanel>
+          <TabPanel>
+            {playerLinks}
+          </TabPanel>
+          <TabPanel>
+            {teamsPanel}
+          </TabPanel>
+          <TabPanel>
+            {bracketsPanel}
+          </TabPanel>
+        </Tabs>
       </ContentContainer>;
     }
 
     return (
       <Container>
-        <BackButton to={'/tournaments'}/>
         <SidebarPanel/>
+        <BackButton to={'/tournaments'}/>
         {tournamentDetailPage}
       </Container>
     );
