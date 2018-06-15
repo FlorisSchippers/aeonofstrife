@@ -21,6 +21,7 @@ class RegisterPage extends React.Component {
       photoURL: `/images/default-image.jpg`,
       skillRating: ``,
       captain: false,
+      admin: false,
       team: ``,
     };
     // Bindings
@@ -63,6 +64,7 @@ class RegisterPage extends React.Component {
               photoURL: state.photoURL,
               skillRating: state.skillRating,
               captain: state.captain,
+              admin: state.admin,
               team: state.team,
             })
               .catch((error) => {

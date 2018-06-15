@@ -5,6 +5,7 @@ import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+import {Bracket} from 'react-tournament-bracket';
 import Paragraph from '../glamorous/text/Paragraph';
 import DetailTitle from '../glamorous/detail/DetailTitle';
 import DetailImage from '../glamorous/detail/DetailImage';
@@ -12,6 +13,7 @@ import PageLink from '../glamorous/text/PageLink';
 import FormButton from '../glamorous/form/FormButton';
 import slugParser from '../common/slugParser';
 import matchMaker from '../common/matchMaker';
+import bracketGenerator from '../common/bracketGenerator';
 
 class TournamentDetailPage extends React.Component {
   constructor(props) {
@@ -154,14 +156,14 @@ class TournamentDetailPage extends React.Component {
       if (this.state.teams.length > 0) {
         console.log(this.state.teams);
         teamsTabTabs = this.state.teams.map((team, i) =>
-          <Tab key={i}>Team {i + 1}</Tab>
+          <Tab key={i}>Team {team.players[0].displayName}</Tab>
         );
         teamsTabPanels = this.state.teams.map((team, i) =>
           <TabPanel key={i}>
             <Paragraph>Average Skill Rating: {team.averageSkillRating}</Paragraph>
             {team.players.map((player, j) => {
               return <PageLink to={'/users/' + player.displayName}
-                        key={j}>{player.displayName}</PageLink>;
+                               key={j}>{player.displayName}</PageLink>;
             })}
           </TabPanel>
         );
@@ -174,7 +176,11 @@ class TournamentDetailPage extends React.Component {
         </Tabs>
       }
       let bracketsTab = <Tab disabled>Brackets</Tab>;
-      let bracketsPanel = `hehe`;
+      let bracketsPanel = ``;
+      if (this.state.teams.length > 0) {
+        bracketsTab = <Tab>Brackets</Tab>;
+        bracketsPanel = <Bracket game={bracketGenerator(this.state)}/>;
+      }
       let dateObject = new Date(this.state.tournament.timestamp * 1000);
       let date = dateObject.getDate() + '-' + dateObject.getMonth() + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
       tournamentDetailPage = <ContentContainer>
