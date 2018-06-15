@@ -1,8 +1,8 @@
-const bracketGenerator = (data) => {
+const bracketGenerator = (generatedTeams, timestamp) => {
 
   let teams = [];
-  for (let i = 0; i < data.teams.length; i++) {
-    teams.push(data.teams[i]);
+  for (let i = 0; i < generatedTeams.length; i++) {
+    teams.push(generatedTeams[i]);
   }
 
   let games = [];
@@ -14,8 +14,8 @@ const bracketGenerator = (data) => {
     if (i >= teams.length - 1) {
       homeTeamId = 'team' + teams[i].players[0].displayName;
       homeTeamName = 'Team ' + teams[i].players[0].displayName;
-      visitorTeamId = 'bye';
-      visitorTeamName = 'bye';
+      visitorTeamId = 'Bye';
+      visitorTeamName = 'Bye';
     } else {
       homeTeamId = 'team' + teams[i].players[0].displayName;
       homeTeamName = 'Team ' + teams[i].players[0].displayName;
@@ -26,7 +26,7 @@ const bracketGenerator = (data) => {
       id: games.length + 1,
       name: 'Match: ' + (games.length + 1),
       bracketLabel: null,
-      scheduled: data.tournament.timestamp * 1000,
+      scheduled: timestamp * 1000,
       court: null,
       sides: {
         home: {
@@ -81,7 +81,7 @@ const bracketGenerator = (data) => {
         id: games.length + 1,
         name: 'Match: ' + (games.length + 1),
         bracketLabel: null,
-        scheduled: data.tournament.timestamp * 1000,
+        scheduled: timestamp * 1000,
         court: null,
         sides: {
           home: {

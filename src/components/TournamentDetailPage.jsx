@@ -24,7 +24,7 @@ class TournamentDetailPage extends React.Component {
       players: [],
       teams: [],
       currentUser: ``,
-      loading: false,
+      loading: true,
       error: null,
     };
   }
@@ -34,13 +34,28 @@ class TournamentDetailPage extends React.Component {
     let currentUser = firebase.auth().currentUser;
     if (currentUser !== null) {
       this.setState({
-          currentUser: {
-            email: currentUser.email,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-          }
+        currentUser: {
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
         }
-      );
+      });
+
+      let user = ``;
+      firestore.collection('users').where('displayName', '==', currentUser.displayName).get()
+        .catch((error) => {
+          this.setState({error: error});
+          this.setState({loading: false});
+        })
+        .then((userQuerySnapshot) => {
+          userQuerySnapshot.forEach((userDoc) => {
+            if (userDoc.id !== 'model') {
+              user = userDoc.data();
+              user.id = userDoc.id;
+            }
+          });
+          this.setState({user: user});
+        });
     }
 
     let tournament = ``;
@@ -105,16 +120,39 @@ class TournamentDetailPage extends React.Component {
             alert(error.message);
           })
           .then(() => {
-            this.props.history.push('/users/me');
+            this.props.history.push('/tournaments');
           });
       });
   };
 
-  handleCreateTeams = event => {
+  handleGenerateTournament = event => {
     event.preventDefault();
     let players = this.state.players;
     let teams = matchMaker(players);
-    this.setState({teams: teams});
+    let brackets = bracketGenerator(teams, this.state.tournament.timestamp);
+    let data = {
+      teams: {},
+      brackets: brackets,
+    };
+    teams.forEach((team) => {
+      data.teams['team' + team.players[0].displayName] = team;
+    });
+    firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        this.setState({
+          tournament: {
+            brackets: brackets,
+            id: this.state.tournament.id,
+            photoURL: this.state.tournament.photoURL,
+            players: this.state.tournament.players,
+            teams: teams,
+            timestamp: this.state.tournament.timestamp,
+          }
+        });
+      });
   };
 
   render() {
@@ -136,11 +174,14 @@ class TournamentDetailPage extends React.Component {
           Join Tournament
         </FormButton>;
       }
-      let createTeamsButton = ``;
+      let generateTournamentButton = ``;
       if (this.state.currentUser !== ``) {
-        createTeamsButton = <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleCreateTeams}>
-          Create Teams
-        </FormButton>;
+        if (this.state.user.admin) {
+          generateTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleGenerateTournament}>
+              Generate Tournament
+            </FormButton>;
+        }
       }
       let playerLinks = ``;
       if (this.state.players.length > 0) {
@@ -153,12 +194,15 @@ class TournamentDetailPage extends React.Component {
       let teamsTabTabs = ``;
       let teamsTabPanels = ``;
       let teamsPanel = ``;
-      if (this.state.teams.length > 0) {
-        console.log(this.state.teams);
-        teamsTabTabs = this.state.teams.map((team, i) =>
+      if (Object.values(this.state.tournament.teams).length > 0) {
+        let teams = [];
+        Object.values(this.state.tournament.teams).forEach((team) => {
+          teams.push(team);
+        });
+        teamsTabTabs = teams.map((team, i) =>
           <Tab key={i}>Team {team.players[0].displayName}</Tab>
         );
-        teamsTabPanels = this.state.teams.map((team, i) =>
+        teamsTabPanels = teams.map((team, i) =>
           <TabPanel key={i}>
             <Paragraph>Average Skill Rating: {team.averageSkillRating}</Paragraph>
             {team.players.map((player, j) => {
@@ -177,9 +221,9 @@ class TournamentDetailPage extends React.Component {
       }
       let bracketsTab = <Tab disabled>Brackets</Tab>;
       let bracketsPanel = ``;
-      if (this.state.teams.length > 0) {
+      if (Object.values(this.state.tournament.brackets).length > 0) {
         bracketsTab = <Tab>Brackets</Tab>;
-        bracketsPanel = <Bracket game={bracketGenerator(this.state)}/>;
+        bracketsPanel = <Bracket game={this.state.tournament.brackets}/>;
       }
       let dateObject = new Date(this.state.tournament.timestamp * 1000);
       let date = dateObject.getDate() + '-' + dateObject.getMonth() + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
@@ -200,7 +244,7 @@ class TournamentDetailPage extends React.Component {
             <Paragraph>This will result in a tournament draft of {Math.floor(this.state.players.length / 5)} teams of 5
               players</Paragraph>
             {joinButton}
-            {createTeamsButton}
+            {generateTournamentButton}
           </TabPanel>
           <TabPanel>
             {playerLinks}
