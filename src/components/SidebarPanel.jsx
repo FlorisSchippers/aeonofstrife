@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Logo from '../glamorous/structure/Logo.jsx';
+import Icon from '../glamorous/structure/Icon.jsx';
 import SidebarContainer from '../glamorous/sidebar/SidebarContainer.jsx';
 import SidebarElement from '../glamorous/sidebar/SidebarElement';
 import SidebarLink from '../glamorous/sidebar/SidebarLink.jsx';
@@ -20,8 +21,9 @@ class SidebarPanel extends React.Component {
 
     return (
       <SidebarContainer>
-        <Link to={'/'}><Logo src='/images/dota-logo.png'/></Link>
+        <Link to={'/'}><Logo src='/images/aos-logo.png'/></Link>
         {sidebar}
+        <a href='https://discord.gg/YhWANKE'><Icon src='/images/discord-logo.png'/></a>
       </SidebarContainer>
     );
   }

@@ -11,9 +11,11 @@ import DetailTitle from '../glamorous/detail/DetailTitle';
 import DetailImage from '../glamorous/detail/DetailImage';
 import PageLink from '../glamorous/text/PageLink';
 import FormButton from '../glamorous/form/FormButton';
+import Icon from '../glamorous/structure/Icon';
 import slugParser from '../common/slugParser';
 import matchMaker from '../common/matchMaker';
 import bracketGenerator from '../common/bracketGenerator';
+import scoreCrawler from '../common/scoreCrawler';
 
 class TournamentDetailPage extends React.Component {
   constructor(props) {
@@ -155,6 +157,27 @@ class TournamentDetailPage extends React.Component {
       });
   };
 
+  handleMatchWinner(matchId, winnerId) {
+    let brackets = scoreCrawler([this.state.tournament.brackets], matchId, winnerId);
+    let data = {brackets: brackets};
+    firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        this.setState({
+          tournament: {
+            brackets: brackets,
+            id: this.state.tournament.id,
+            photoURL: this.state.tournament.photoURL,
+            players: this.state.tournament.players,
+            teams: this.state.tournament.teams,
+            timestamp: this.state.tournament.timestamp,
+          }
+        });
+      });
+  };
+
   render() {
     let tournamentDetailPage = ``;
     if (this.state.error) {
@@ -190,6 +213,7 @@ class TournamentDetailPage extends React.Component {
                     key={i}>{player.displayName}</PageLink>
         );
       }
+
       let teamsTab = <Tab disabled>Teams</Tab>;
       let teamsTabTabs = ``;
       let teamsTabPanels = ``;
@@ -202,6 +226,7 @@ class TournamentDetailPage extends React.Component {
         teamsTabTabs = teams.map((team, i) =>
           <Tab key={i}>Team {team.players[0].displayName}</Tab>
         );
+        let discordChannels = ['C96fjDC', 'BG73rh5', '25W5YMC', '9wA9HYM'];
         teamsTabPanels = teams.map((team, i) =>
           <TabPanel key={i}>
             <Paragraph>Average Skill Rating: {team.averageSkillRating}</Paragraph>
@@ -209,6 +234,9 @@ class TournamentDetailPage extends React.Component {
               return <PageLink to={'/users/' + player.displayName}
                                key={j}>{player.displayName}</PageLink>;
             })}
+            <Paragraph><a href={'https://discord.gg/' + discordChannels[i]} target='_blank'><Icon
+              css={{position: 'unset', margin: '20px 0 -20px 0'}}
+              src='/images/discord-logo.png'/></a>Join the Team {team.players[0].displayName} Discord</Paragraph>
           </TabPanel>
         );
         teamsTab = <Tab>Teams</Tab>;
@@ -219,6 +247,7 @@ class TournamentDetailPage extends React.Component {
           {teamsTabPanels}
         </Tabs>
       }
+
       let bracketsTab = <Tab disabled>Brackets</Tab>;
       let bracketsPanel = ``;
       if (Object.values(this.state.tournament.brackets).length > 0) {
@@ -227,6 +256,26 @@ class TournamentDetailPage extends React.Component {
       }
       let dateObject = new Date(this.state.tournament.timestamp * 1000);
       let date = dateObject.getDate() + '-' + dateObject.getMonth() + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
+
+      let scoresTab = <Tab disabled>Scores</Tab>;
+      let scoresPanel = ``;
+      if (this.state.currentUser !== ``) {
+        if (this.state.user.admin) {
+          scoresTab = <Tab>Scores</Tab>;
+          if (Object.values(this.state.tournament.brackets).length > 0) {
+            scoresPanel = scoreCrawler([this.state.tournament.brackets]).map((match, i) => {
+              return <Paragraph key={i}>
+                Winner of match {match.id}
+                <FormButton css={{margin: '15px'}}
+                            onClick={() => this.handleMatchWinner(match.id, match.sides.home.team.id)}>{match.sides.home.team.name}</FormButton>
+                <FormButton css={{margin: '15px'}}
+                            onClick={() => this.handleMatchWinner(match.id, match.sides.visitor.team.id)}>{match.sides.visitor.team.name}</FormButton>
+              </Paragraph>
+            });
+          }
+        }
+      }
+
       tournamentDetailPage = <ContentContainer>
         <LoginPanel/>
         <DetailImage src={this.state.tournament.photoURL}/>
@@ -237,6 +286,7 @@ class TournamentDetailPage extends React.Component {
             <Tab>Players</Tab>
             {teamsTab}
             {bracketsTab}
+            {scoresTab}
           </TabList>
           <TabPanel>
             <Paragraph>Tournament will start at: {date}</Paragraph>
@@ -254,6 +304,9 @@ class TournamentDetailPage extends React.Component {
           </TabPanel>
           <TabPanel>
             {bracketsPanel}
+          </TabPanel>
+          <TabPanel>
+            {scoresPanel}
           </TabPanel>
         </Tabs>
       </ContentContainer>;
