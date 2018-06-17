@@ -147,6 +147,7 @@ class TournamentDetailPage extends React.Component {
         this.setState({
           tournament: {
             brackets: brackets,
+            displayName: this.state.tournament.displayName,
             id: this.state.tournament.id,
             photoURL: this.state.tournament.photoURL,
             players: this.state.tournament.players,
@@ -168,6 +169,7 @@ class TournamentDetailPage extends React.Component {
         this.setState({
           tournament: {
             brackets: brackets,
+            displayName: this.state.tournament.displayName,
             id: this.state.tournament.id,
             photoURL: this.state.tournament.photoURL,
             players: this.state.tournament.players,
@@ -179,6 +181,7 @@ class TournamentDetailPage extends React.Component {
   };
 
   render() {
+    // TODO: ADD REMOVE ME FROM TOURNAMENT, ADMIN PANEL WITH SUBSCRIBE ALL PLAYERS, ADMIN TAB WITH ALL ADMIN OPTIONS
     let tournamentDetailPage = ``;
     if (this.state.error) {
       tournamentDetailPage = <ContentContainer>
@@ -279,7 +282,7 @@ class TournamentDetailPage extends React.Component {
       tournamentDetailPage = <ContentContainer>
         <LoginPanel/>
         <DetailImage src={this.state.tournament.photoURL}/>
-        <DetailTitle>{this.state.tournament.id}</DetailTitle>
+        <DetailTitle>{this.state.tournament.displayName}</DetailTitle>
         <Tabs>
           <TabList>
             <Tab>Information</Tab>

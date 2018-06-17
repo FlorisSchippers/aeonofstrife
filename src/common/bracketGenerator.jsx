@@ -14,7 +14,7 @@ const bracketGenerator = (generatedTeams, timestamp) => {
     if (i >= teams.length - 1) {
       homeTeamId = 'team' + teams[i].players[0].displayName;
       homeTeamName = 'Team ' + teams[i].players[0].displayName;
-      visitorTeamId = 'Bye';
+      visitorTeamId = 'bye';
       visitorTeamName = 'Bye';
     } else {
       homeTeamId = 'team' + teams[i].players[0].displayName;
@@ -54,7 +54,7 @@ const bracketGenerator = (generatedTeams, timestamp) => {
   switch (games.length) {
     case 0:
       return {
-        id: 'noMame',
+        id: 'noMatch',
         name: 'No match',
         bracketLabel: null,
         scheduled: 0,

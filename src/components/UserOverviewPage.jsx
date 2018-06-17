@@ -42,12 +42,12 @@ class UserOverviewPage extends React.Component {
   render() {
     let userOverviewPage = ``;
     if (this.state.error) {
-      userOverviewPage = <ContentContainer>
+      userOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      userOverviewPage = <ContentContainer>
+      userOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>Loading users...</Paragraph>
       </ContentContainer>;
@@ -56,7 +56,7 @@ class UserOverviewPage extends React.Component {
         <PageLink to={'/users/' + user.displayName}
                   key={i}>{user.displayName}</PageLink>
       );
-      userOverviewPage = <ContentContainer>
+      userOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         {users}
       </ContentContainer>

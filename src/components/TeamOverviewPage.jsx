@@ -42,12 +42,12 @@ class TeamOverviewPage extends React.Component {
   render() {
     let teamOverviewPage = ``;
     if (this.state.error) {
-      teamOverviewPage = <ContentContainer>
+      teamOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      teamOverviewPage = <ContentContainer>
+      teamOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>Loading teams...</Paragraph>
       </ContentContainer>;
@@ -56,7 +56,7 @@ class TeamOverviewPage extends React.Component {
         <PageLink to={'/teams/' + team.displayName}
                   key={i}>{team.displayName}</PageLink>
       );
-      teamOverviewPage = <ContentContainer>
+      teamOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         {teams}
       </ContentContainer>

@@ -42,12 +42,12 @@ class LeagueOverviewPage extends React.Component {
   render() {
     let leagueOverviewPage = ``;
     if (this.state.error) {
-      leagueOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      leagueOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>Loading league...</Paragraph>
       </ContentContainer>;
@@ -56,7 +56,7 @@ class LeagueOverviewPage extends React.Component {
         <PageLink to={'/league/division' + division.division.toString()}
                   key={i}>Division {division.division.toString()}</PageLink>
       );
-      leagueOverviewPage = <ContentContainer>
+      leagueOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         {divisions}
       </ContentContainer>

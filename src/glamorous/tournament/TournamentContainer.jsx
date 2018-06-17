@@ -5,7 +5,7 @@ export default glamorous.div({
   fontFamily: 'Open Sans',
   fontSize: '15px',
   lineHeight: '1.5',
-  width: '575px',
+  width: '600px',
   display: 'inline-block',
   position: 'relative',
   marginBottom: '25px',

@@ -45,12 +45,12 @@ class TournamentOverviewPage extends React.Component {
   render() {
     let tournamentOverviewPage = ``;
     if (this.state.error) {
-      tournamentOverviewPage = <ContentContainer>
+      tournamentOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>{this.state.error.message}</Paragraph>;
       </ContentContainer>;
     } else if (this.state.loading) {
-      tournamentOverviewPage = <ContentContainer>
+      tournamentOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         <Paragraph>Loading tournaments...</Paragraph>
       </ContentContainer>;
@@ -58,7 +58,7 @@ class TournamentOverviewPage extends React.Component {
       let tournaments = this.state.tournaments.map((tournament, i) =>
         <TournamentPanel tournament={tournament} key={i}/>
       );
-      tournamentOverviewPage = <ContentContainer>
+      tournamentOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         {tournaments}
       </ContentContainer>

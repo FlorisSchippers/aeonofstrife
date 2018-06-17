@@ -15,7 +15,7 @@ class HomePage extends React.Component {
     return (
       <Container>
         <SidebarPanel/>
-        <ContentContainer>
+        <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
           <LoginPanel/>
           <Title>Welcome to Aeon of Strife</Title>
         </ContentContainer>

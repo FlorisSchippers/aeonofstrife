@@ -188,7 +188,7 @@ class ProfilePage extends React.Component {
       }
       userDetailPage = <ContentContainer>
         <LoginPanel/>
-        <Title>Manage your profile</Title>
+        <Title>Manage <PageLink css={{display: 'inherit', fontSize: 'inherit'}} to={'/users/' + this.state.displayName}>your profile</PageLink></Title>
         <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="displayName" bsSize="large">
             <FormLabel>Display Name</FormLabel>

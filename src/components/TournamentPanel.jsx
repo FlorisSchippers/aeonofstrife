@@ -14,7 +14,7 @@ class TournamentPanel extends React.Component {
     return (
       <TournamentContainer>
         <Link to={'/tournaments/' + this.props.tournament.id}><TournamentImage src={this.props.tournament.photoURL}/></Link>
-        <TournamentLink to={'/tournaments/' + this.props.tournament.id}>Tournament {this.props.tournament.id}</TournamentLink>
+        <TournamentLink to={'/tournaments/' + this.props.tournament.id}>{this.props.tournament.displayName}</TournamentLink>
       </TournamentContainer>
     );
   }
