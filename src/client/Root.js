@@ -12,6 +12,7 @@ import TeamDetailPage from '../components/TeamDetailPage';
 import LeagueOverviewPage from '../components/LeagueOverviewPage';
 import LeagueDetailPage from '../components/LeagueDetailPage';
 import TournamentOverviewPage from '../components/TournamentOverviewPage';
+import NewTournamentPage from '../components/NewTournamentPage';
 import TournamentDetailPage from '../components/TournamentDetailPage';
 
 // We need a Root component for React Hot Loading
@@ -54,6 +55,7 @@ class Root extends Component {
         <Route exact path='/league' component={LeagueOverviewPage}/>
         <Route exact path='/league/:division' component={LeagueDetailPage}/>
         <Route exact path='/tournaments' component={TournamentOverviewPage}/>
+        <Route exact path='/tournaments/new' component={NewTournamentPage}/>
         <Route exact path='/tournaments/:tournament' component={TournamentDetailPage}/>
       </Switch>
     );

@@ -26,6 +26,7 @@ class TournamentDetailPage extends React.Component {
       players: [],
       teams: [],
       currentUser: ``,
+      user: ``,
       loading: true,
       error: null,
     };
@@ -101,29 +102,31 @@ class TournamentDetailPage extends React.Component {
 
   handleJoinTourament = event => {
     event.preventDefault();
-    let id = ``;
-    firestore.collection('users').where('displayName', '==', this.state.currentUser.displayName).get()
+    let data = {
+      players: this.state.tournament.players,
+    };
+    data.players[this.state.user.id] = true;
+    firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
       .catch((error) => {
-        this.setState({error: error});
-        this.setState({loading: false});
+        alert(error.message);
       })
-      .then((userQuerySnapshot) => {
-        userQuerySnapshot.forEach((userDoc) => {
-          if (userDoc.id !== 'model') {
-            id = userDoc.id;
-          }
-        });
-        let data = {
-          players: this.state.tournament.players,
-        };
-        data.players[id] = true;
-        firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
-          .catch((error) => {
-            alert(error.message);
-          })
-          .then(() => {
-            this.props.history.push('/tournaments');
-          });
+      .then(() => {
+        this.props.history.push('/tournaments');
+      });
+  };
+
+  handleLeaveTourament = event => {
+    event.preventDefault();
+    let data = {
+      players: this.state.tournament.players,
+    };
+    delete data.players[this.state.user.id];
+    firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        this.props.history.push('/tournaments');
       });
   };
 
@@ -158,6 +161,62 @@ class TournamentDetailPage extends React.Component {
       });
   };
 
+  handleAddAllUsers = event => {
+    event.preventDefault();
+    let users = [];
+    firestore.collection('users').get()
+      .catch((error) => {
+        this.setState({error: error});
+        this.setState({loading: false});
+      })
+      .then((querySnapshot) => {
+        querySnapshot.forEach(function (docSnapshot) {
+          if (docSnapshot.id !== 'model') {
+            users.push(docSnapshot.id);
+          }
+        });
+        let data = {
+          players: this.state.tournament.players,
+        };
+        for (let user of users) {
+          data.players[user] = true;
+        }
+        data.players[this.state.user.id] = true;
+        firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
+          .catch((error) => {
+            alert(error.message);
+          })
+          .then(() => {
+            this.props.history.push('/tournaments');
+          });
+      });
+  };
+
+  handleResetTournament = event => {
+    event.preventDefault();
+    let data = {
+      teams: {},
+      brackets: {},
+    };
+    firestore.collection('tournaments').doc(this.state.tournament.id).update(data)
+      .catch((error) => {
+        alert(error.message);
+      })
+      .then(() => {
+        this.setState({
+          tournament: {
+            brackets: {},
+            displayName: this.state.tournament.displayName,
+            id: this.state.tournament.id,
+            photoURL: this.state.tournament.photoURL,
+            players: this.state.tournament.players,
+            teams: {},
+            timestamp: this.state.tournament.timestamp,
+          }
+        });
+      });
+  };
+
   handleMatchWinner(matchId, winnerId) {
     let brackets = scoreCrawler([this.state.tournament.brackets], matchId, winnerId);
     let data = {brackets: brackets};
@@ -181,7 +240,6 @@ class TournamentDetailPage extends React.Component {
   };
 
   render() {
-    // TODO: ADD REMOVE ME FROM TOURNAMENT, ADMIN PANEL WITH SUBSCRIBE ALL PLAYERS, ADMIN TAB WITH ALL ADMIN OPTIONS
     let tournamentDetailPage = ``;
     if (this.state.error) {
       tournamentDetailPage = <ContentContainer>
@@ -194,18 +252,24 @@ class TournamentDetailPage extends React.Component {
         <Paragraph>Loading tournament: {slugParser(this.props.location.pathname)}</Paragraph>
       </ContentContainer>;
     } else {
-      let joinButton = ``;
+      let joinTournamentButton = ``;
+      let leaveTournamentButton = ``;
       if (this.state.currentUser !== ``) {
-        joinButton = <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleJoinTourament}>
-          Join Tournament
-        </FormButton>;
-      }
-      let generateTournamentButton = ``;
-      if (this.state.currentUser !== ``) {
-        if (this.state.user.admin) {
-          generateTournamentButton =
-            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleGenerateTournament}>
-              Generate Tournament
+        let currentlyParticipating = false;
+        for (let player of this.state.players) {
+          if (this.state.currentUser.displayName === player.displayName) {
+            currentlyParticipating = true;
+          }
+        }
+        if (currentlyParticipating) {
+          leaveTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleLeaveTourament}>
+              Leave Tournament
+            </FormButton>;
+        } else {
+          joinTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleJoinTourament}>
+              Join Tournament
             </FormButton>;
         }
       }
@@ -258,15 +322,31 @@ class TournamentDetailPage extends React.Component {
         bracketsPanel = <Bracket game={this.state.tournament.brackets}/>;
       }
       let dateObject = new Date(this.state.tournament.timestamp * 1000);
-      let date = dateObject.getDate() + '-' + dateObject.getMonth() + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
+      let date = dateObject.getDate() + '-' + (dateObject.getMonth()+1) + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
 
-      let scoresTab = <Tab disabled>Scores</Tab>;
-      let scoresPanel = ``;
+      let adminTab = <Tab disabled>Admin</Tab>;
+      let adminPanel = ``;
+      let scoreButtons = ``;
+      let resetTournamentButton = ``;
+      let addAllUsersButton = ``;
+      let generateTournamentButton = ``;
       if (this.state.currentUser !== ``) {
         if (this.state.user.admin) {
-          scoresTab = <Tab>Scores</Tab>;
+          adminTab = <Tab>Admin</Tab>;
+          generateTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleGenerateTournament}>
+              Generate Tournament
+            </FormButton>;
+          addAllUsersButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleAddAllUsers}>
+              Add All Users
+            </FormButton>;
+          resetTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleResetTournament}>
+              Reset Tournament
+            </FormButton>;
           if (Object.values(this.state.tournament.brackets).length > 0) {
-            scoresPanel = scoreCrawler([this.state.tournament.brackets]).map((match, i) => {
+            scoreButtons = scoreCrawler([this.state.tournament.brackets]).map((match, i) => {
               return <Paragraph key={i}>
                 Winner of match {match.id}
                 <FormButton css={{margin: '15px'}}
@@ -276,6 +356,12 @@ class TournamentDetailPage extends React.Component {
               </Paragraph>
             });
           }
+          adminPanel = <Paragraph>
+            {generateTournamentButton}
+            {addAllUsersButton}
+            {resetTournamentButton}
+            {scoreButtons}
+            </Paragraph>;
         }
       }
 
@@ -289,15 +375,15 @@ class TournamentDetailPage extends React.Component {
             <Tab>Players</Tab>
             {teamsTab}
             {bracketsTab}
-            {scoresTab}
+            {adminTab}
           </TabList>
           <TabPanel>
             <Paragraph>Tournament will start at: {date}</Paragraph>
             <Paragraph>Current amount of players: {this.state.players.length}</Paragraph>
             <Paragraph>This will result in a tournament draft of {Math.floor(this.state.players.length / 5)} teams of 5
               players</Paragraph>
-            {joinButton}
-            {generateTournamentButton}
+            {joinTournamentButton}
+            {leaveTournamentButton}
           </TabPanel>
           <TabPanel>
             {playerLinks}
@@ -309,7 +395,7 @@ class TournamentDetailPage extends React.Component {
             {bracketsPanel}
           </TabPanel>
           <TabPanel>
-            {scoresPanel}
+            {adminPanel}
           </TabPanel>
         </Tabs>
       </ContentContainer>;

@@ -6,7 +6,7 @@ export default glamorous.div({
   fontSize: '15px',
   lineHeight: '1.5',
   width: '600px',
-  display: 'inline-block',
+  display: 'block',
   position: 'relative',
   marginBottom: '25px',
   padding: '25px',

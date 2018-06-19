@@ -6,12 +6,15 @@ import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
+import FormButton from '../glamorous/form/FormButton';
 
 class TournamentOverviewPage extends React.Component {
   constructor(props) {
     super(props);
     // Bindings
     this.state = {
+      currentUser: ``,
+      user: ``,
       tournaments: [],
       loading: false,
       error: null,
@@ -20,6 +23,33 @@ class TournamentOverviewPage extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true});
+    let currentUser = firebase.auth().currentUser;
+    if (currentUser !== null) {
+      this.setState({
+        currentUser: {
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
+        }
+      });
+
+      let user = ``;
+      firestore.collection('users').where('displayName', '==', currentUser.displayName).get()
+        .catch((error) => {
+          this.setState({error: error});
+          this.setState({loading: false});
+        })
+        .then((userQuerySnapshot) => {
+          userQuerySnapshot.forEach((userDoc) => {
+            if (userDoc.id !== 'model') {
+              user = userDoc.data();
+              user.id = userDoc.id;
+            }
+          });
+          this.setState({user: user});
+        });
+    }
+
     let tournaments = [];
     let tournament = ``;
     if (this.state.tournaments.length === 0) {
@@ -42,6 +72,11 @@ class TournamentOverviewPage extends React.Component {
     }
   }
 
+  handleNewTournament = event => {
+    event.preventDefault();
+    this.props.history.push('/tournaments/new');
+  };
+
   render() {
     let tournamentOverviewPage = ``;
     if (this.state.error) {
@@ -55,12 +90,22 @@ class TournamentOverviewPage extends React.Component {
         <Paragraph>Loading tournaments...</Paragraph>
       </ContentContainer>;
     } else {
+      let newTournamentButton = ``;
+      if (this.state.currentUser !== ``) {
+        if (this.state.user.admin) {
+          newTournamentButton =
+            <FormButton css={{display: 'block', marginTop: '15px'}} onClick={this.handleNewTournament}>
+              +
+            </FormButton>;
+        }
+      }
       let tournaments = this.state.tournaments.map((tournament, i) =>
         <TournamentPanel tournament={tournament} key={i}/>
       );
       tournamentOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
         {tournaments}
+        {newTournamentButton}
       </ContentContainer>
     }
 
