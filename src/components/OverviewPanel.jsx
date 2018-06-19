@@ -1,9 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {withRouter} from 'react-router-dom';
-import OverviewContainer from '../glamorous/tournament/OverviewContainer';
-import OverviewImage from '../glamorous/tournament/OverviewImage';
-import OverviewLink from '../glamorous/tournament/OverviewLink';
+import OverviewContainer from '../glamorous/overview/OverviewContainer';
+import OverviewImage from '../glamorous/overview/OverviewImage';
+import OverviewLink from '../glamorous/overview/OverviewLink';
 
 class OverviewPanel extends React.Component {
   constructor(props) {

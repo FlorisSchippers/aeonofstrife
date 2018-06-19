@@ -6,6 +6,7 @@ import LoginPanel from './LoginPanel';
 import BackButton from '../glamorous/buttons/BackButton';
 import DetailTitle from '../glamorous/detail/DetailTitle';
 import Paragraph from '../glamorous/text/Paragraph';
+import Accent from '../glamorous/text/Accent';
 import DetailImage from '../glamorous/detail/DetailImage';
 import slugParser from '../common/slugParser';
 
@@ -60,7 +61,7 @@ class UserDetailPage extends React.Component {
         <LoginPanel/>
         <DetailImage src={this.state.user.photoURL}/>
         <DetailTitle>{this.state.user.displayName} {captain}</DetailTitle>
-        <Paragraph>Skill Rating: {this.state.user.skillRating}</Paragraph>
+        <Paragraph>Skill Rating: <Accent>{this.state.user.skillRating}</Accent> MMR</Paragraph>
       </ContentContainer>;
     }
 

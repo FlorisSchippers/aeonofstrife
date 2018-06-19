@@ -2,6 +2,7 @@ import glamorous from 'glamorous'
 
 export default glamorous.input({
   display: 'block',
+  maxWidth: 'calc(100% - 25px)',
   width: '333px',
   height: '23px',
   padding: '5px 10px',

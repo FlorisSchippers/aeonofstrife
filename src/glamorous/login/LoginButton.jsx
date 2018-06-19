@@ -1,5 +1,5 @@
 import glamorous from 'glamorous';
-import appVars from "../../config/appVars";
+import appVars from '../../config/appVars';
 
 export default glamorous.button({
   cursor: 'pointer',

@@ -1,7 +1,8 @@
 import glamorous from 'glamorous';
+import appVars from '../../config/appVars';
 
 export default glamorous.div({
-  display: 'inline-block',
+  display: 'none',
   position: 'fixed',
   float: 'left',
   width: '250px',
@@ -11,4 +12,8 @@ export default glamorous.div({
   backgroundPosition: 'top',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
+
+  [appVars.mediaQueries.tablet_portrait]: {
+    display: 'inline-block',
+  }
 });

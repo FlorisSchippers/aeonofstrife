@@ -10,6 +10,7 @@ import Paragraph from '../glamorous/text/Paragraph';
 import DetailTitle from '../glamorous/detail/DetailTitle';
 import DetailImage from '../glamorous/detail/DetailImage';
 import PageLink from '../glamorous/text/PageLink';
+import Accent from '../glamorous/text/Accent';
 import FormButton from '../glamorous/form/FormButton';
 import Icon from '../glamorous/structure/Icon';
 import slugParser from '../common/slugParser';
@@ -296,7 +297,7 @@ class TournamentDetailPage extends React.Component {
         let discordChannels = ['C96fjDC', 'BG73rh5', '25W5YMC', '9wA9HYM'];
         teamsTabPanels = teams.map((team, i) =>
           <TabPanel key={i}>
-            <Paragraph>Average Skill Rating: {team.averageSkillRating}</Paragraph>
+            <Paragraph>Average Skill Rating: <Accent>{team.averageSkillRating}</Accent> MMR</Paragraph>
             {team.players.map((player, j) => {
               return <PageLink to={'/users/' + player.displayName}
                                key={j}>{player.displayName}</PageLink>;
@@ -321,8 +322,6 @@ class TournamentDetailPage extends React.Component {
         bracketsTab = <Tab>Brackets</Tab>;
         bracketsPanel = <Bracket game={this.state.tournament.brackets}/>;
       }
-      let dateObject = new Date(this.state.tournament.timestamp * 1000);
-      let date = dateObject.getDate() + '-' + (dateObject.getMonth()+1) + '-' + dateObject.getFullYear() + ', ' + dateObject.getHours() + ':' + dateObject.getMinutes();
 
       let adminTab = <Tab disabled>Admin</Tab>;
       let adminPanel = ``;
@@ -361,9 +360,23 @@ class TournamentDetailPage extends React.Component {
             {addAllUsersButton}
             {resetTournamentButton}
             {scoreButtons}
-            </Paragraph>;
+          </Paragraph>;
         }
       }
+
+      let dateObject = new Date(this.state.tournament.timestamp * 1000);
+      let date = dateObject.getDate() + '-';
+      let month = (dateObject.getMonth() + 1);
+      if (month < 10) {
+        month = '0' + month;
+      }
+      date += month + '-' + dateObject.getFullYear();
+      let time = dateObject.getHours() + ':';
+      let minutes = dateObject.getMinutes();
+      if (minutes % 10 === 0) {
+        minutes += '0';
+      }
+      time += minutes;
 
       tournamentDetailPage = <ContentContainer>
         <LoginPanel/>
@@ -378,10 +391,10 @@ class TournamentDetailPage extends React.Component {
             {adminTab}
           </TabList>
           <TabPanel>
-            <Paragraph>Tournament will start at: {date}</Paragraph>
-            <Paragraph>Current amount of players: {this.state.players.length}</Paragraph>
-            <Paragraph>This will result in a tournament draft of {Math.floor(this.state.players.length / 5)} teams of 5
-              players</Paragraph>
+            <Paragraph>Tournament will start on <Accent>{date}</Accent> at <Accent>{time}</Accent></Paragraph>
+            <Paragraph>With <Accent>{this.state.players.length}</Accent> current participating players</Paragraph>
+            <Paragraph>This will result in a tournament draft of <Accent>{Math.floor(this.state.players.length / 5)}</Accent> teams of <Accent>5</Accent> players</Paragraph>
+            <Paragraph>Where <Accent>{5 - (this.state.players.length % 5)}</Accent> players are needed to create a <Accent>Team {Math.floor(this.state.players.length / 5) + 1}</Accent></Paragraph>
             {joinTournamentButton}
             {leaveTournamentButton}
           </TabPanel>

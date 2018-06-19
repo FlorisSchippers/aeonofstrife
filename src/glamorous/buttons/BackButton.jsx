@@ -33,4 +33,3 @@ export default glamorous(Link)({
     backgroundColor: appVars.theme.primary,
   },
 });
-
