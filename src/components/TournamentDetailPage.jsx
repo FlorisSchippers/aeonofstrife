@@ -320,7 +320,7 @@ class TournamentDetailPage extends React.Component {
       let bracketsPanel = ``;
       if (Object.values(this.state.tournament.brackets).length > 0) {
         bracketsTab = <Tab>Brackets</Tab>;
-        bracketsPanel = <Bracket game={this.state.tournament.brackets}/>;
+        bracketsPanel = <Bracket game={this.state.tournament.brackets} gameDimensions={{height: 100, width: 225}}/>;
       }
 
       let adminTab = <Tab disabled>Admin</Tab>;
