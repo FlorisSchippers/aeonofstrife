@@ -15,7 +15,7 @@ class LeagueDetailPage extends React.Component {
     super(props);
     // Bindings
     this.state = {
-      league: ``,
+      division: ``,
       teams: [],
       loading: false,
       error: null,
@@ -24,38 +24,20 @@ class LeagueDetailPage extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true});
-    let league = ``;
-    let teams = [];
-    if (this.state.league.length === 0) {
-      firestore.collection('league').where('timestamp', '==', slugParser(this.props.location.pathname)).get()
+    let division = ``;
+    if (this.state.division.length === 0) {
+      console.log(slugParser(this.props.location.pathname).slice(-1));
+      firestore.collection('league').where('division', '==', parseInt(slugParser(this.props.location.pathname).slice(-1))).get()
         .catch((error) => {
           this.setState({error: error});
           this.setState({loading: false});
         })
         .then((leagueQuerySnapshot) => {
           leagueQuerySnapshot.forEach((leagueDocSnapshot) => {
-            league = leagueDocSnapshot.data();
+            division = leagueDocSnapshot.data();
           });
-          this.setState({league: league});
-          if (this.state.league.teams.length > 0) {
-            this.state.league.teams.forEach((teamId) => {
-              firestore.collection('teams').doc(teamId).get()
-                .catch((error) => {
-                  this.setState({error: error});
-                  this.setState({loading: false});
-                })
-                .then((teamQuerySnapshot) => {
-                  teams = this.state.teams;
-                  teams.push(teamQuerySnapshot.data());
-                  this.setState({teams: teams});
-                  if (this.state.teams.length === this.state.league.teams.length) {
-                    this.setState({loading: false});
-                  }
-                });
-            });
-          } else {
-            this.setState({loading: false});
-          }
+          this.setState({division: division});
+          this.setState({loading: false});
         });
     }
   }
@@ -73,15 +55,11 @@ class LeagueDetailPage extends React.Component {
         <Paragraph>Loading league: {slugParser(this.props.location.pathname)}</Paragraph>
       </ContentContainer>;
     } else {
-      let teams = this.state.teams.map((team, i) =>
-        <PageLink to={'/teams/' + team.displayName}
-                  key={i}>{team.displayName}</PageLink>
-      );
       leagueDetailPage = <ContentContainer>
-        <LoginPanel refresh={false}/>
-        <DetailImage src='/images/dota-logo.png'/>
-        <DetailTitle>{this.state.league.timestamp}</DetailTitle>
-        {teams}
+        <LoginPanel/>
+        <DetailImage src={this.state.division.photoURL}/>
+        <DetailTitle>{this.state.division.displayName}</DetailTitle>
+        <Paragraph>No teams participating yet...</Paragraph>
       </ContentContainer>;
     }
 

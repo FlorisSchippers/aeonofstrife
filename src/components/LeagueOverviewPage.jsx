@@ -1,11 +1,11 @@
 import React from 'react';
 import SidebarPanel from './SidebarPanel';
+import OverviewPanel from './OverviewPanel';
 import LoginPanel from './LoginPanel';
 import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
-import PageLink from '../glamorous/text/PageLink';
 
 class LeagueOverviewPage extends React.Component {
   constructor(props) {
@@ -53,8 +53,7 @@ class LeagueOverviewPage extends React.Component {
       </ContentContainer>;
     } else {
       let divisions = this.state.divisions.map((division, i) =>
-        <PageLink to={'/league/division' + division.division.toString()}
-                  key={i}>Division {division.division.toString()}</PageLink>
+        <OverviewPanel link={'/league/division' + division.division} data={division} index={i} key={i}/>
       );
       leagueOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>

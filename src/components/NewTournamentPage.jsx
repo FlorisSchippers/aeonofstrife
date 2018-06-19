@@ -19,7 +19,7 @@ class NewTeamPage extends React.Component {
       user: ``,
       brackets: {},
       displayName: ``,
-      photoURL: `/images/tournament-logo.png`,
+      photoURL: `/images/tournament.png`,
       players: {},
       teams: {},
       timestamp: ``,
