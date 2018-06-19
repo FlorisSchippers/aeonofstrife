@@ -1,6 +1,7 @@
 import glamorous from 'glamorous';
 
 export default glamorous.img({
-  width: `100px`,
-  height: `auto`,
+  width: 'auto',
+  maxWidth: '125px',
+  height: '75px',
 });

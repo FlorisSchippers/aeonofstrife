@@ -3,9 +3,9 @@ import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
+import OverviewPanel from './OverviewPanel';
 import BackButton from '../glamorous/buttons/BackButton';
 import Paragraph from '../glamorous/text/Paragraph';
-import PageLink from '../glamorous/text/PageLink';
 
 class TeamOverviewPage extends React.Component {
   constructor(props) {
@@ -53,8 +53,7 @@ class TeamOverviewPage extends React.Component {
       </ContentContainer>;
     } else {
       let teams = this.state.teams.map((team, i) =>
-        <PageLink to={'/teams/' + team.displayName}
-                  key={i}>{team.displayName}</PageLink>
+        <OverviewPanel link={'/teams/' + team.displayName} data={team} index={i} key={i}/>
       );
       teamOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>

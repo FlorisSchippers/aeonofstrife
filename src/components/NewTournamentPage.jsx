@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom';
 import Container from '../glamorous/structure/Container.jsx';
 import ContentContainer from '../glamorous/structure/ContentContainer.jsx';
 import SidebarPanel from './SidebarPanel';
+import BackButton from '../glamorous/buttons/BackButton';
 import Title from '../glamorous/text/Title.jsx';
 import LoginPanel from '../components/LoginPanel';
 import FormGroup from '../glamorous/form/FormGroup';
@@ -90,6 +91,7 @@ class NewTeamPage extends React.Component {
   render() {
     return (
       <Container>
+        <BackButton to={'/tournaments'}/>
         <SidebarPanel/>
         <ContentContainer>
           <LoginPanel/>

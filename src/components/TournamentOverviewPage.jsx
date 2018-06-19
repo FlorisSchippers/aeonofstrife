@@ -1,7 +1,7 @@
 import React from 'react';
 import SidebarPanel from './SidebarPanel';
 import LoginPanel from './LoginPanel';
-import TournamentPanel from './TournamentPanel';
+import OverviewPanel from './OverviewPanel';
 import Container from '../glamorous/structure/Container';
 import ContentContainer from '../glamorous/structure/ContentContainer';
 import BackButton from '../glamorous/buttons/BackButton';
@@ -100,7 +100,7 @@ class TournamentOverviewPage extends React.Component {
         }
       }
       let tournaments = this.state.tournaments.map((tournament, i) =>
-        <TournamentPanel tournament={tournament} key={i}/>
+        <OverviewPanel link={'/tournaments/' + tournament.id} data={tournament} index={i} key={i}/>
       );
       tournamentOverviewPage = <ContentContainer css={{backgroundImage: 'url(/images/dota-bg-heroes.jpg)'}}>
         <LoginPanel/>
