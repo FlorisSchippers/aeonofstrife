@@ -32,6 +32,15 @@ for (let i = 0; i < data.length; i++) {
 let numberOfTeams = Math.floor(players.length / 5);
 players = players.splice(0, numberOfTeams * 5);
 
+// Log generated players in console
+for (let i = 0; i < players.length; i++) {
+	let captain = '';
+	if (players[i].captain) {
+		captain = ' (captain)';
+	}
+	console.log('Player: ' + players[i].displayName + captain + ', skillRating: ' + players[i].skillRating);
+}
+
 // Separate captains from players
 for (let i = 0; i < players.length; i++) {
 	if (players[i].captain) {
