@@ -74,16 +74,10 @@ const matchMaker = (data) => {
       if (teams[i].players.length >= 5) {
         finishedTeams.push(teams[i]);
         teams.splice(i, 1);
+        i--;
       }
     }
   }
-  finishedTeams.push(teams[0]);
-  teams.splice(0, 1);
-
-  // Log generated teams in console
-  // for (let i = 0; i < finishedTeams.length; i++) {
-  //   console.log(finishedTeams[i]);
-  // }
 
   return finishedTeams;
 };
