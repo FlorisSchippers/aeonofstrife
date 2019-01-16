@@ -26,6 +26,9 @@ node_modules
 # build directory
 build
 
+# firebase config
+firebaseConfig.js
+
 # Optional npm cache directory
 .npm
 

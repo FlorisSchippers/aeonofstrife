@@ -8,4 +8,4 @@ A competitive eSports platform using React + Google's Cloud Firestore for AeonOf
 Disclaimer: The FirebaseConfig.js file is required to run this project
 
 ### Who do I talk to? ###
-For questions about this repository you can address Floris Schippers
+For questions about this repository you can address Floris Schippers at FlorisSchippers@gmail.com
