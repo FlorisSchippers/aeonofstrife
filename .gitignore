@@ -26,9 +26,6 @@ node_modules
 # build directory
 build
 
-# firebase config
-firebaseConfig.js
-
 # Optional npm cache directory
 .npm
 
@@ -38,3 +35,6 @@ firebaseConfig.js
 # OS-specific temporary files
 Thumbs.db
 .DS_Store
+
+# Anything related to firebase
+*firebase*
